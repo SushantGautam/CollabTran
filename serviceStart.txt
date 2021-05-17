@@ -1,0 +1,26 @@
+cd CollabTran
+
+workon ublrecom
+
+sudo fuser -n tcp -k 80
+
+pip install --prefer-binary -r requirements.txt
+
+python manage.py makemigrations WebApp
+
+python manage.py migrate
+
+python manage.py createsuperuserwithpassword --username nsdevil --password nsdevil --email admin@example.org --preserve
+
+screen
+
+python manage.py runserver 0.0.0.0:80
+
+
+
+# sudo su :
+fuser -n tcp -k 80
+../.virtualenvs/nsdai-portal/bin/python manage.py runserver 0.0.0.0:80
+
+
+GIT: https://bitbucket.org/nsdevil/ublrecom/src/master/
