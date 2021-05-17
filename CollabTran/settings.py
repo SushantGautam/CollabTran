@@ -136,3 +136,7 @@ CHANNEL_LAYERS = {
 }
 STATIC_ROOT = os.path.join(BASE_DIR, "WebApp/static")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
