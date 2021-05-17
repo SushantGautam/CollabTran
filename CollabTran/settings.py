@@ -128,3 +128,5 @@ CHANNEL_LAYERS = {
         # "CONFIG": {"hosts": [("127.0.0.1", 6379)],},
     },
 }
+STATIC_ROOT = os.path.join(BASE_DIR, "WebApp/static")
+
