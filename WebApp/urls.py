@@ -2,8 +2,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
 
-from . import api
-from . import views
+from .views import signup, LeaderBoard, MyProfile, logout_request, login_request
 
 router = routers.DefaultRouter()
 
@@ -13,5 +12,14 @@ urlpatterns = (
 )
 
 urlpatterns += (
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('', TemplateView.as_view(template_name='home.html'), name='index'),
+    path('LeaderBoard', LeaderBoard, name='LeaderBoard'),
+)
+
+urlpatterns += (
+    path('signup', signup, name='signup'),
+    path("logout", logout_request, name="logout"),
+    path("login", login_request, name="login"),
+
+    path('MyProfile', MyProfile, name='MyProfile'),
 )

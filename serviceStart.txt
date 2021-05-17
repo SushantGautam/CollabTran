@@ -1,6 +1,6 @@
 cd CollabTran
 
-workon ublrecom
+workon collabtran
 
 sudo fuser -n tcp -k 80
 
