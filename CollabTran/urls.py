@@ -17,7 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from CollabTran.views import gitpull
+
 urlpatterns = [
     path('', include('WebApp.urls')),
     path('admin/', admin.site.urls),
+    path('gitpull', gitpull),
+
 ]
