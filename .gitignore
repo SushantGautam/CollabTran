@@ -52,3 +52,4 @@ Thumbs.db
 venv/*.*
 /db.sqlite3
 /WebApp/static/ioe.edu.np/
+/WebApp/static/

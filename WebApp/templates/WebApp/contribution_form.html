@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <p>
+        <a class="btn btn-light" href="{% url 'WebApp_Contribution_list' %}">
+            Contribution Listing
+        </a>
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {#  {{form.errors}}#}
+        {{ form.as_p }}
+        {#  <div class="form-group row">#}
+        {#  <label class="col-sm-2 col-form-label" for="last_updated">last_updated: </label>#}
+        {#  <input class="form-control col-sm-10" id="last_updated" type="datetime-local" name="last_updated" value="{{ object.last_updated }}" disabled>#}
+        {#  </div>#}
+        {#  <div class="form-group row">#}
+        {#  <label class="col-sm-2 col-form-label" for="created">created: </label>#}
+        {#  <input class="form-control col-sm-10" id="created" type="datetime-local" name="created" value="{{ object.created }}" disabled>#}
+        {#  </div>#}
+        {#  <div class="form-group row">#}
+        {#  <label class="col-sm-2 col-form-label" for="User">User: </label>#}
+        {#  <input class="form-control col-sm-10" id="User" type="text" name="User" value="{{ object.User }}">#}
+        {#  </div>#}
+        {#  <input type="submit" value="Save" class="btn btn-primary">#}
+    </form>
+
+{% endblock %}

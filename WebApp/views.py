@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 
@@ -53,3 +54,41 @@ def LeaderBoard(request):
 
 def MyProfile(request):
     return render(request, 'MyProfile.html', {'data': None})
+
+
+from django.views import generic
+from . import models
+from . import forms
+
+
+class ContributionListView(generic.ListView):
+    model = models.Contribution
+    form_class = forms.ContributionForm
+    paginate_by = 10  # and that's it !!
+
+
+class ContributionCreateView(generic.CreateView):
+    model = models.Contribution
+    form_class = forms.ContributionForm
+
+
+class ContributionDetailView(generic.DetailView):
+    model = models.Contribution
+    form_class = forms.ContributionForm
+
+
+class ContributionUpdateView(generic.UpdateView):
+    model = models.Contribution
+    form_class = forms.ContributionForm
+    pk_url_kwarg = "pk"
+
+
+class UrlsListView(generic.ListView):
+    model = models.Urls
+    form_class = forms.UrlsForm
+
+
+def resolveURL(request):
+    username = request.GET.get('url', None)
+
+    return JsonResponse(data)
