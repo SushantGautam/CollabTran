@@ -8,6 +8,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from rest_framework.authtoken.models import Token
 
+from .models import Contribution
 from .utils import text_from_html
 
 
@@ -102,6 +103,28 @@ def resolveURL(request):
     html = urlopen(url).read()
     data = list(OrderedDict.fromkeys(text_from_html(html)))
     return JsonResponse({"data": "hi"})
+
+
+def SubmitContributions(request):
+    if request.user.is_anonymous:
+        return HttpResponse('Unauthorized', status=401)
+
+    User = request.user
+    Submission = request.POST.get("Submission")
+    EditURL = request.POST.get('EditURL')
+    EditxPath = request.POST.get('EditxPath')
+    try:
+        contribution = Contribution.objects.create(User=User, Submission=Submission, EditURL=EditURL,
+                                                   EditxPath=EditxPath)
+        if contribution.getDifference():
+            contribution.save()
+
+            return JsonResponse({"difference": contribution.getDifference()})
+        else:
+            return JsonResponse({"errorMessage": "No Change Detected"}, status=500)
+
+    except Exception  as e:
+        return JsonResponse({"errorMessage": str(e)}, status=500)
 
 
 def home(request, token=None):

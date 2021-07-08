@@ -375,6 +375,7 @@
                     $("#translate-list").append(
                         $('<textarea >', {
                                 type: 'text',
+                                id: 'translateTextArea',
                                 height: "50vh",
                                 title: elm.textContent,
                                 placeholder: elm.textContent,
@@ -412,23 +413,27 @@
             });
             $.ajax({
                 type: "POST",
-                url: '/resolveURL',
+                url: '/SubmitContributions',
 
                 data: {
-                    url: location.href,
                     csrfmiddlewaretoken: '{{ csrf_token }}',
+
+                    EditURL: location.href,
+                    EditxPath: $("#translateTextArea").attr('divname'),
+                    Submission: "" + $("#translateTextArea").val(),
                 },
                 success: function (data, textStatus, errorThrown) {
 
-                    $("#translate-list")[0].innerHTML = `Success!\nTODO: Show Change\n Nothing has been stored to server yet. This is just demo.`
+                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr>` + data['difference'] + `<hr> <p> Right Click any of the text on the page to translate.</p>`
                     $('#transsubmitbutton').prop('disabled', false);
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
+
                 },
 
                 error: function (jqXHR, textStatus, errorThrown) {
-                    debugger
+
                     console.log("ajax fail")
                     $('#transsubmitbutton').prop('disabled', false);
                     if (jqXHR.status === 401) {
@@ -436,12 +441,19 @@
                             window.location = "/login";
                         }, 3000); /* 1000 = 1 second*/
 
-                        $.notify("Authetication Failed! Please Login. . .", {
+                        $.notify("Authentication Failed! Please Login. . .", {
                             position: "left bottom",
                             autoHideDelay: 1000
                         });
+                    } else if (jqXHR.status === 500) {
+
+                        $.notify("Something Failed! " + jqXHR.responseJSON['errorMessage'], {
+                            position: "left bottom",
+                            autoHideDelay: 1000
+                        });
+                        console.log(jqXHR['errorMessage'])
                     } else {
-                        $.notify("Some Problem Occured", {position: "left bottom", autoHideDelay: 2000});
+                        $.notify("Some Problem Occurred", {position: "left bottom", autoHideDelay: 2000});
                     }
                     $('#transsubmitbutton').prop('disabled', false);
 
