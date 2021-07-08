@@ -15,7 +15,7 @@ class ContributionAdmin(admin.ModelAdmin):
     list_display = [
         "last_updated",
         "created",
-        "User",
+        "User","EditxPath", "EditURL"
     ]
     readonly_fields = [
         "last_updated",

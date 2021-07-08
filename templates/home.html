@@ -11,12 +11,15 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"
             integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.0.0/diff.js"
+            integrity="sha512-jaeQJDM6wDsWMgWNRmJ5w7LF1Ttk3lXCAzm0QWJw+pmEndef3y3aB4+sLLT3tZ2Bqu2g/BD+UN3kUhXXVpMQFw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -184,25 +187,36 @@
         );
 
         console.log("IframePageChanged to:" + location)
-        {##}
-        {#// now get text nodes data#}
-        {#$.ajax({#}
-        {#    url: '/resolveURL',#}
-        {#    type: "POST",#}
-        {#// headers: {"Authorization": "{{ token }}"},#}
-        {##}
-        {#    data: {#}
-        {#        url: location.href,#}
-        {#        csrfmiddlewaretoken: '{{ csrf_token }}'#}
-        {#    },#}
-        {#    success: function (data) {#}
-        {#        console.log(data);#}
-        {#    },#}
-        {##}
 
 
         traverse($("#iframeID").contents()[0]);
 
+
+        // now get text nodes data
+        $.ajax({
+            url: '/resolveURL',
+            type: "POST",
+            // headers: {"Authorization": "{{ token }}"},
+
+            data: {
+                EditURL: document.getElementById('iframeID').contentWindow.location.pathname,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+                console.log(data);
+                globalTranslationBucket = data
+            },
+
+        });
+    }
+
+    globalTranslationBucket = []
+
+    function CheckIfEditXPathExistsInGlobalBucket(path) {
+        matches = globalTranslationBucket.filter(e => e.EditxPath === path)
+        if (matches.length) {
+            return matches[0].Submission
+        } else return ""
 
     }
 
@@ -379,8 +393,9 @@
                                 height: "50vh",
                                 title: elm.textContent,
                                 placeholder: elm.textContent,
+                                oldTransData: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)),
                                 divname: getPathTo(elm.parentNode),
-                                text: elm.textContent
+                                text: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)) ? CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)) : elm.textContent
                             }
                         )
                     );
@@ -411,6 +426,13 @@
             $.notify("Submitting. . .", {
                 position: "left bottom", autoHideDelay: 2000, className: 'notice',
             });
+
+            EditURL = document.getElementById('iframeID').contentWindow.location.pathname;
+            EditxPath = $("#translateTextArea").attr('divname');
+            Submission = "" + $("#translateTextArea").val();
+            Placeholder = $("#translateTextArea").attr('placeholder')
+            OldTransData = $("#translateTextArea").attr('oldTransData')
+
             $.ajax({
                 type: "POST",
                 url: '/SubmitContributions',
@@ -418,17 +440,18 @@
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
 
-                    EditURL: location.href,
-                    EditxPath: $("#translateTextArea").attr('divname'),
-                    Submission: "" + $("#translateTextArea").val(),
+                    EditURL: EditURL,
+                    EditxPath: EditxPath,
+                    Submission: "" + Submission,
                 },
                 success: function (data, textStatus, errorThrown) {
 
-                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr>` + data['difference'] + `<hr> <p> Right Click any of the text on the page to translate.</p>`
+                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr><div id="displayDiff"></div><hr> <p> Right Click any of the text on the page to translate.</p>`
                     $('#transsubmitbutton').prop('disabled', false);
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
+                    displayDiff(Submission, OldTransData, divname = "displayDiff")
 
                 },
 
@@ -471,5 +494,31 @@
 
 
     }
+
+    function displayDiff(other, one, divname = "displayDiff") {
+
+        color = '';
+
+        let span = null;
+
+        var diff = Diff.diffWords(one, other),
+            display = document.getElementById(divname),
+            fragment = document.createDocumentFragment();
+
+        diff.forEach((part) => {
+            // green for additions, red for deletions
+            // grey for common parts
+            const color = part.added ? 'green' :
+                part.removed ? 'red' : 'grey';
+            span = document.createElement('span');
+            span.style.color = color;
+            span.appendChild(document
+                .createTextNode(part.value));
+            fragment.appendChild(span);
+        });
+
+        display.appendChild(fragment);
+    }
+
 
 </script>
