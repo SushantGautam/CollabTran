@@ -151,6 +151,18 @@
         $("#iframeID").contents().on("contextmenu", function (e) {
                 e.stopPropagation();
                 e.preventDefault()
+                {% if not user.is_authenticated %}
+                    setTimeout(function () {
+                        window.location = "/login";
+                    }, 3000); /* 1000 = 1 second*/
+
+                    $.notify("You need to login first . . .", {
+                        position: "left bottom",
+                        autoHideDelay: 1000
+                    });
+                    return
+                {% endif %}
+
 
                 ShowTranslatePanel(force = true);
                 ff = getPathTo(e.target);
@@ -399,7 +411,7 @@
                 },
                 success: function (data, textStatus, errorThrown) {
 
-                    $("#translate-list")[0].innerHTML = "Success!\nTODO: Show Change"
+                    $("#translate-list")[0].innerHTML = `Success!\nTODO: Show Change\n Nothing has been stored to server yet. This is just demo.`
                     $('#transsubmitbutton').prop('disabled', false);
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
