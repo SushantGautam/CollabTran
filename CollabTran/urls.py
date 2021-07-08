@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 
 from CollabTran.views import gitpull
 
@@ -25,3 +24,9 @@ urlpatterns = [
     path('gitpull', gitpull),
 
 ]
+
+from django.contrib import admin
+
+admin.site.site_header = 'CollabTran Administration'  # default: "Django Administration"
+admin.site.index_title = 'CollabTran Administration'  # default: "Site administration"
+admin.site.site_title = 'CollabTran Administration'  # default: "Django site admin"

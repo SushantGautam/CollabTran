@@ -33,11 +33,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'channels',
+    'rest_framework.authtoken',
+    # 'channels',
     'constance',
     'constance.backends.database',
     'WebApp',
-
 
 ]
 INSTALLED_APPS += ("django_createsuperuserwithpassword",)
@@ -150,3 +150,8 @@ CONSTANCE_CONFIG = {
     'SiteBase': ("https://ioe.edu.np", 'The base directory url to use.'),
 }
 
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/home'
+
+LOGOUT_REDIRECT_URL = "/"

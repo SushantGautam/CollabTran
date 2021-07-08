@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from django.urls import include
 from django.urls import path
@@ -7,13 +8,6 @@ from rest_framework import routers
 from . import views
 from .views import signup, LeaderBoard, MyProfile, logout_request, login_request
 
-from django.contrib import admin
-
-admin.site.site_header = 'CollabTran Administration'                    # default: "Django Administration"
-admin.site.index_title = 'CollabTran Administration'                 # default: "Site administration"
-admin.site.site_title = 'CollabTran Administration' # default: "Django site admin"
-
-
 router = routers.DefaultRouter()
 
 urlpatterns = (
@@ -22,7 +16,7 @@ urlpatterns = (
 )
 
 urlpatterns += (
-    path('', TemplateView.as_view(template_name='home.html'), name='index'),
+    path('', views.home, name='index'),
     path('translate', login_required(TemplateView.as_view(template_name='translate.html')), name='translate'),
     path('LeaderBoard', LeaderBoard, name='LeaderBoard'),
 )
@@ -30,7 +24,7 @@ urlpatterns += (
 urlpatterns += (
     path('signup', signup, name='signup'),
     path("logout", logout_request, name="logout"),
-    path("login", login_request, name="login"),
+    url(r'^login/$', login_request, name='login'),
 
     path('MyProfile', MyProfile, name='MyProfile'),
 )
@@ -44,11 +38,8 @@ urlpatterns += (
          name="WebApp_Contribution_update"),
 )
 
-
-#ajax
+# ajax
 urlpatterns += (
     path('resolveURL', views.resolveURL, name='resolveURL'),
 
 )
-
-
