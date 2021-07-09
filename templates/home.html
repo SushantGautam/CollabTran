@@ -603,5 +603,10 @@
         display.appendChild(fragment);
     }
 
+    {%  if navigateToPage %}
+        setTimeout(function () {
+            document.getElementById('iframeID').contentWindow.location.pathname = "{{ navigateToPage }}"
+        }, 1000);
+    {%  endif %}
 
 </script>

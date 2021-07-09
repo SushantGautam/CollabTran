@@ -16,7 +16,7 @@ urlpatterns = (
 
 urlpatterns += (
     path('', views.home, name='index'),
-    path('translate', login_required(TemplateView.as_view(template_name='translate.html')), name='translate'),
+    path('navigateToPage', views.home, name='index'),
     path('LeaderBoard', LeaderBoard, name='LeaderBoard'),
 )
 
