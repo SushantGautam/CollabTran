@@ -101,11 +101,11 @@ def resolveURL(request):
                                                                           'User__username',
                                                                           'created')
     df = pd.DataFrame(list(contributions_q))
-    df['TotalEditsOnThisElement'] = df.groupby(['EditxPath'])['EditxPath'].transform('count')
 
     TotalElementsEditedOnThisPage = 0
     TotalEditsOnThisPage = 0
     if (len(df)):
+        df['TotalEditsOnThisElement'] = df.groupby(['EditxPath'])['EditxPath'].transform('count')
         TotalElementsEditedOnThisPage = df[:].EditxPath.unique().__len__()
         TotalEditsOnThisPage = len(df)
         df = df[df.groupby(['EditxPath'])['id'].transform(max) == df['id']]

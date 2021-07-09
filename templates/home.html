@@ -175,20 +175,7 @@
 
     function IframePageChanged(location) {
         {#mousedown, mouseup, click#}
-        if (not_first_page) {
-            ShowTranslatePanel(force = true);
-        } else {
-            not_first_page = 1;
 
-            $.notify(" Right-click any visible text to start!", {
-                position: "left bottom", className: 'success',
-                autoHideDelay: 5000
-            });
-            $.notify(" 🙏 Welcome to CollabTran!", {
-                position: "left bottom", className: 'notice',
-                autoHideDelay: 5000
-            });
-        }
         //click right
         $("#iframeID").contents().on("contextmenu", function (e) {
                 iFrameReloadRemaining = 1;
@@ -243,6 +230,21 @@
 
                 RepaintIframeWithTranslations(force = iFrameReloadRemaining)
                 iFrameReloadRemaining = 0;
+
+                if (not_first_page) {
+                    ShowTranslatePanel(force = true);
+                } else {
+                    not_first_page = 1;
+
+                    $.notify(" Right-click any visible text to start!", {
+                        position: "left bottom", className: 'success',
+                        autoHideDelay: 5000
+                    });
+                    $.notify(" 🙏 Welcome to CollabTran!", {
+                        position: "left bottom", className: 'notice',
+                        autoHideDelay: 5000
+                    });
+                }
 
             },
 
@@ -523,14 +525,15 @@
                 },
                 success: function (data, textStatus, errorThrown) {
 
-                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr><div id="displayDiff"></div><hr> <p> You can Right Click any of the text on the page to continue translating.</p>`
+                    $("#translate-list")[0].innerHTML = `Success!
+<br><br><input type='submit' value='Ok' onclick="RepaintIframeWithTranslations(force = iFrameReloadRemaining);iFrameReloadRemaining = 0;">
+<hr><p> You can Right Click any of the text on the page to continue translating.</p><b>Your changes:</b><hr><div id="displayDiff"></div><hr>`
                     $('#transsubmitbutton').prop('disabled', false);
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
 
                     displayDiff(Submission, OldTransData, divname = "displayDiff")
-                    $("#translate-list")[0].innerHTML += `<hr><input type='submit' value='Ok' onclick="RepaintIframeWithTranslations(force = iFrameReloadRemaining);iFrameReloadRemaining = 0;">`
 
                 },
 
