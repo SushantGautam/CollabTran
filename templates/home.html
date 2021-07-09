@@ -57,7 +57,10 @@
             {% include "messages.html" %}
             {% block translate %}
                 <input type="checkbox" id="languageSwitch" data-toggle="toggle" data-style="ios" checked>
-                Show English Version
+                <span>Show English Version</span>
+
+
+
                 <div id="rightPanel-main">
                     <br>
                     <a onclick="ShowTranslatePanel()">
@@ -142,14 +145,19 @@
             return
         }
 
-        if (!$('#languageSwitch').prop('checked')) {
-
-            console.log("languageSwitchlanguageSwitch")
+        if ($('#languageSwitch').prop('checked') === false) {
             globalTranslationBucket.forEach(e => {
+
                 if (CheckIfEditXPathExistsInGlobalBucket(e[1].EditxPath) !== "") {
 
-                    nodex = getElementByXPath(e[1].EditxPath)
-                    nodex.innerHTML = nodex.textContent.replace('&nbsp;', ' ').replace(e[1].Original, e[1].Submission)
+                    try {
+                        paths = String(e[1].EditxPath)
+                        nodex = getElementByXPath(paths)
+                        nodex.textContent = e[1].Submission
+                    } catch (err) {
+                        alert("Press F12 to Open Developer Console");
+                    }
+
 
                 }
             });
@@ -384,13 +392,12 @@
 
     }
 
-    function getElementByXPath(xpath) {
-        return new XPathEvaluator()
-            .createExpression(xpath)
-            .evaluate($('#iframeID').contents()[0], XPathResult.FIRST_ORDERED_NODE_TYPE)
-            .singleNodeValue
-    }
 
+    getElementByXPath = function (a, test = false) {
+        b = $('#iframeID').contents()[0];
+        if (test) alert(b, a)
+        return b.evaluate(a, b, null, 9, null).singleNodeValue
+    }
 
     nodeLists = []
 
