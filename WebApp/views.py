@@ -101,7 +101,11 @@ def resolveURL(request):
                                                                           'User__username',
                                                                           'created')
     df = pd.DataFrame(list(contributions_q))
+    TotalElementsEditedOnThisPage = 0
+    TotalEditsOnThisPage = 0
     if (len(df)):
+        TotalElementsEditedOnThisPage = df[:].EditxPath.unique().__len__()
+        TotalEditsOnThisPage = len(df)
         df = df[df.groupby(['EditxPath'])['id'].transform(max) == df['id']]
     # contributions = Contribution.objects.filter(EditURL=EditURL).annotate(
     #     latest_date=Max('created')).values('Submission', "EditxPath", 'User__username')
@@ -109,7 +113,8 @@ def resolveURL(request):
     # html = urlopen(url).read()
     # data = list(OrderedDict.fromkeys(text_from_html(html)))
     return JsonResponse(
-        {"data": df.to_json(orient='index'), "TotalElementsEditedOnThisPage": 10, "TotalEditsOnThisPage": 10},
+        {"data": df.to_json(orient='index'), "TotalElementsEditedOnThisPage": TotalElementsEditedOnThisPage,
+         "TotalEditsOnThisPage": TotalEditsOnThisPage},
         safe=False)
 
 
