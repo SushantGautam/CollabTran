@@ -118,7 +118,7 @@
                         <p> Right Click any of the text on the page to translate.</p>
                         <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
                         <p> Total Edits On This Page:<span
-                        >` + TotalElementsEditedOnThisPage + `</span>
+                        >` + TotalEditsOnThisPage + `</span>
                         </p>
 
                     </div>
@@ -269,7 +269,7 @@
             $("#rightPanel-translate").show()
             $("#translate-list")[0].innerHTML = ` <p> Right Click any of the text on the page to translate.</p>
                 <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
-                        <p> Total Edits On This Page:<span>` + TotalElementsEditedOnThisPage + `</span>
+                        <p> Total Edits On This Page: <span>` + TotalEditsOnThisPage + `</span>
                         </p>`
 
 
@@ -448,7 +448,6 @@
                             }
                         )
                     );
-                    debugger
 
                     Submission = CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm), getJustElement = 1)
 
@@ -458,11 +457,10 @@
                     Submit
                     </button>
                         <hr>`
-                    debugger
                     if (Submission) {
                         $("#translate-list")[0].innerHTML += `
                     <p id="CurrentdivlastEditedBy"> Last edited by: <a href="#">` + Submission.User__username + ` </a><p>
-                    <p> <small>Total Edits On This Element:` + Submission.User__username + `</small></p>
+                    <p> <small>Edited ` + Submission.TotalEditsOnThisElement + ` times before.</small></p>
                     <p id="CurrentDivID"> Current Element ID:<br><input  size="10" value='` + Submission.EditxPath + `'> <p>
                     `
                     } else {

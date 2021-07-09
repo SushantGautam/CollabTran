@@ -101,6 +101,8 @@ def resolveURL(request):
                                                                           'User__username',
                                                                           'created')
     df = pd.DataFrame(list(contributions_q))
+    df['TotalEditsOnThisElement'] = df.groupby(['EditxPath'])['EditxPath'].transform('count')
+
     TotalElementsEditedOnThisPage = 0
     TotalEditsOnThisPage = 0
     if (len(df)):
