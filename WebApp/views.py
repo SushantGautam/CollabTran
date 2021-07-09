@@ -97,7 +97,8 @@ def resolveURL(request):
         return HttpResponse('Unauthorized', status=401)
     EditURL = request.POST.get('EditURL')
 
-    contributions_q = Contribution.objects.filter(EditURL=EditURL).values("id", 'Original', 'Submission', "EditxPath", 'User__username',
+    contributions_q = Contribution.objects.filter(EditURL=EditURL).values("id", 'Original', 'Submission', "EditxPath",
+                                                                          'User__username',
                                                                           'created')
     df = pd.DataFrame(list(contributions_q))
     if (len(df)):
@@ -107,7 +108,9 @@ def resolveURL(request):
 
     # html = urlopen(url).read()
     # data = list(OrderedDict.fromkeys(text_from_html(html)))
-    return JsonResponse(df.to_json(orient='index'), safe=False)
+    return JsonResponse(
+        {"data": df.to_json(orient='index'), "TotalElementsEditedOnThisPage": 10, "TotalEditsOnThisPage": 10},
+        safe=False)
 
 
 def SubmitContributions(request):

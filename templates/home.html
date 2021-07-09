@@ -116,6 +116,11 @@
                     <br>
                     <div id="translate-list">
                         <p> Right Click any of the text on the page to translate.</p>
+                        <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
+                        <p> Total Edits On This Page:<span
+                        >` + TotalElementsEditedOnThisPage + `</span>
+                        </p>
+
                     </div>
                 </div>
             {% endblock %}
@@ -165,6 +170,8 @@
     }
 
     iFrameReloadRemaining = 1;
+    TotalElementsEditedOnThisPage = 0;
+    TotalEditsOnThisPage = 0;
 
     function IframePageChanged(location) {
         {#mousedown, mouseup, click#}
@@ -229,7 +236,10 @@
             },
             success: function (data) {
                 {#console.log(data);#}
-                globalTranslationBucket = Object.entries(JSON.parse(data))
+                globalTranslationBucket = Object.entries(JSON.parse(data['data']))
+                TotalEditsOnThisPage = data['TotalEditsOnThisPage']
+                TotalElementsEditedOnThisPage = data['TotalElementsEditedOnThisPage']
+
 
                 RepaintIframeWithTranslations(force = iFrameReloadRemaining)
                 iFrameReloadRemaining = 0;
@@ -241,12 +251,15 @@
 
     globalTranslationBucket = []
 
-    function CheckIfEditXPathExistsInGlobalBucket(path) {
+    function CheckIfEditXPathExistsInGlobalBucket(path, getJustElement = false) {
 
         matches = globalTranslationBucket.filter(e => e[1].EditxPath === path)
         if (matches.length) {
+            if (getJustElement) {
+                return matches[0][1]
+            }
             return matches[0][1].Submission
-        } else return ""
+        } else return null
 
     }
 
@@ -254,7 +267,10 @@
         if ($('#rightPanel-main').is(':visible') || force) {
             $("#rightPanel-main").hide()
             $("#rightPanel-translate").show()
-            $("#translate-list")[0].innerHTML = " <p> Right Click any of the text on the page to translate.</p>"
+            $("#translate-list")[0].innerHTML = ` <p> Right Click any of the text on the page to translate.</p>
+                <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
+                        <p> Total Edits On This Page:<span>` + TotalElementsEditedOnThisPage + `</span>
+                        </p>`
 
 
         } else {
@@ -418,6 +434,7 @@
                 {
                     {#elm.textContent = "Changed"#}
                     $("#translate-list")[0].innerHTML = ""
+
                     $("#translate-list").append(
                         $('<textarea >', {
                                 type: 'text',
@@ -425,18 +442,33 @@
                                 height: "50vh",
                                 title: elm.textContent,
                                 placeholder: elm.getAttribute("CT_Original"),
-                                oldTransData: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)),
+                                oldTransData: "" + CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)),
                                 divname: getPathTo(elm),
                                 text: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)) ? CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)) : elm.textContent
                             }
                         )
                     );
+                    debugger
+
+                    Submission = CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm), getJustElement = 1)
+
+
                     $("#translate-list")[0].innerHTML += `<br><br>
                     <button  id="transsubmitbutton" class="" onclick="transsubmitbutton()">
                     Submit
                     </button>
-`
-
+                        <hr>`
+                    debugger
+                    if (Submission) {
+                        $("#translate-list")[0].innerHTML += `
+                    <p id="CurrentdivlastEditedBy"> Last edited by: <a href="#">` + Submission.User__username + ` </a><p>
+                    <p> <small>Total Edits On This Element:` + Submission.User__username + `</small></p>
+                    <p id="CurrentDivID"> Current Element ID:<br><input  size="10" value='` + Submission.EditxPath + `'> <p>
+                    `
+                    } else {
+                        $("#translate-list")[0].innerHTML += `This is the first edit on this element.<hr>`
+                    }
+                    $("#translate-list")[0].innerHTML += `<p id="CurrentPageID"> Current Page: <input  size="10" value='` + document.getElementById('iframeID').contentWindow.location.pathname + `'><p>`
                 } else {
                     console.log("Not Text")
                     $.notify("Text Not Selected", {position: "left bottom", autoHideDelay: 1000});
@@ -493,16 +525,14 @@
                 },
                 success: function (data, textStatus, errorThrown) {
 
-                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr><div id="displayDiff"></div><hr> <p> Right Click any of the text on the page to translate.</p>`
+                    $("#translate-list")[0].innerHTML = `Success!<br><b>Your changes:</b><hr><div id="displayDiff"></div><hr> <p> You can Right Click any of the text on the page to continue translating.</p>`
                     $('#transsubmitbutton').prop('disabled', false);
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
 
                     displayDiff(Submission, OldTransData, divname = "displayDiff")
-
-                    RepaintIframeWithTranslations(force = iFrameReloadRemaining)
-                    iFrameReloadRemaining = 0;
+                    $("#translate-list")[0].innerHTML += `<hr><input type='submit' value='Ok' onclick="RepaintIframeWithTranslations(force = iFrameReloadRemaining);iFrameReloadRemaining = 0;">`
 
                 },
 
@@ -531,7 +561,8 @@
                     }
                     $('#transsubmitbutton').prop('disabled', false);
 
-                },
+                }
+                ,
 
             })
 
