@@ -48,7 +48,7 @@
     <div class="row fill">
         <div class="col-10">
             <iframe id="iframeID" onLoad="IframePageChanged(this.contentWindow.location);"
-                    src="{% static 'ioe.edu.np/np/index.htm' %}" frameborder="0"
+                    src="{% static 'ioe.edu.np/en/index.htm' %}" frameborder="0"
                     style=" overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
 
         </div>
@@ -145,11 +145,12 @@
         if (!$('#languageSwitch').prop('checked')) {
 
             console.log("languageSwitchlanguageSwitch")
-
             globalTranslationBucket.forEach(e => {
                 if (CheckIfEditXPathExistsInGlobalBucket(e[1].EditxPath) !== "") {
+
                     nodex = getElementByXPath(e[1].EditxPath)
-                    nodex.innerHTML = nodex.innerHTML.replace(e[1].Original, e[1].Submission)
+                    nodex.innerHTML = nodex.textContent.replace('&nbsp;', ' ').replace(e[1].Original, e[1].Submission)
+
                 }
             });
         }
@@ -197,7 +198,7 @@
                 console.log("sushant ", ff)
 
                 handleNewTextElement(e.target, edit = true);
-                {#debugger#}
+
 
             }
         );
@@ -219,7 +220,7 @@
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             success: function (data) {
-                console.log(data);
+                {#console.log(data);#}
                 globalTranslationBucket = Object.entries(JSON.parse(data))
 
                 RepaintIframeWithTranslations(force = iFrameReloadRemaining)
@@ -233,9 +234,10 @@
     globalTranslationBucket = []
 
     function CheckIfEditXPathExistsInGlobalBucket(path) {
+
         matches = globalTranslationBucket.filter(e => e[1].EditxPath === path)
         if (matches.length) {
-            return matches[0].Submission
+            return matches[0][1].Submission
         } else return ""
 
     }
@@ -331,26 +333,26 @@
 
 
     function isExcluded(elm) {
-        if (elm.tagName == "STYLE") {
+        if (elm.tagName === "STYLE") {
             return true;
         }
-        if (elm.tagName == "SCRIPT") {
+        if (elm.tagName === "SCRIPT") {
             return true;
         }
-        if (elm.tagName == "NOSCRIPT") {
+        if (elm.tagName === "NOSCRIPT") {
             return true;
         }
-        if (elm.tagName == "IFRAME") {
+        if (elm.tagName === "IFRAME") {
             return true;
         }
-        if (elm.tagName == "OBJECT") {
+        if (elm.tagName === "OBJECT") {
             return true;
         }
         return false
     }
 
     function traverse(elm) {
-        if (elm.nodeType == Node.ELEMENT_NODE || elm.nodeType == Node.DOCUMENT_NODE) {
+        if (elm.nodeType === Node.ELEMENT_NODE || elm.nodeType === Node.DOCUMENT_NODE) {
 
             // exclude elements with invisible text nodes
             if (isExcluded(elm)) {
@@ -364,16 +366,19 @@
 
         }
 
-        if (elm.nodeType == Node.TEXT_NODE) {
+        if (elm.nodeType === Node.TEXT_NODE) {
 
             // exclude text node consisting of only spaces
-            if (elm.nodeValue.trim() == "") {
+            if (elm.nodeValue.trim() === "") {
                 return
             }
 
             // elm.nodeValue here is visible text we need.
             {#console.log(elm.nodeValue);#}
-            handleNewTextElement(elm);
+
+            {#getPathTo(elm)#}
+            handleNewTextElement(elm.parentNode);
+
         }
 
 
@@ -391,14 +396,14 @@
 
     function handleNewTextElement(elm, edit = false) {
         console.log(elm.nodeName); // "#text" is only filtered
-        {#debugger#}
-        {#console.log("elm type is : "+ elm.nodeType);#}
-        console.log("$x('" + getPathTo(elm.parentNode) + "', $('#iframeID').contents()[0])[0].textContent");
-        console.log(getElementByXPath(getPathTo(elm.parentNode)))
 
-        if (getElementByXPath(getPathTo(elm.parentNode)) != null) {
+        console.log("elm type is : " + elm.nodeType);
+        console.log("$x('" + getPathTo(elm) + "', $('#iframeID').contents()[0])[0].textContent");
+        console.log(getElementByXPath(getPathTo(elm)))
+
+        if (getElementByXPath(getPathTo(elm)) != null) {
             console.log("yes")
-            console.log(getPathTo(elm.parentNode))
+            console.log(getPathTo(elm))
             if (edit) {
 
 
@@ -412,10 +417,10 @@
                                 id: 'translateTextArea',
                                 height: "50vh",
                                 title: elm.textContent,
-                                placeholder: elm.textContent,
-                                oldTransData: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)),
-                                divname: getPathTo(elm.parentNode),
-                                text: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)) ? CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm.parentNode)) : elm.textContent
+                                placeholder: elm.getAttribute("CT_Original"),
+                                oldTransData: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)),
+                                divname: getPathTo(elm),
+                                text: CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)) ? CheckIfEditXPathExistsInGlobalBucket(getPathTo(elm)) : elm.textContent
                             }
                         )
                     );
@@ -432,7 +437,9 @@
                 }
             } else {
                 //add to a global list
-                nodeLists.push(getElementByXPath(getPathTo(elm.parentNode)))
+                nodeLists.push(getElementByXPath(getPathTo(elm)))
+                elm.setAttribute("CT_Original", elm.textContent);
+
             }
 
         } else {
@@ -484,6 +491,7 @@
                     $.notify("Success!", {
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
+
                     displayDiff(Submission, OldTransData, divname = "displayDiff")
 
                     RepaintIframeWithTranslations(force = iFrameReloadRemaining)
