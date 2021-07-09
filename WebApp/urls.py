@@ -4,7 +4,6 @@ from django.urls import include
 from django.urls import path
 from django.views.generic import TemplateView
 from rest_framework import routers
-
 from . import views
 from .views import signup, LeaderBoard, MyProfile, logout_request, login_request
 

@@ -56,7 +56,7 @@
             <br>
             {% include "messages.html" %}
             {% block translate %}
-                <input type="checkbox" id="languageSwitch" data-toggle="toggle" data-style="ios">
+                <input type="checkbox" id="languageSwitch" data-toggle="toggle" data-style="ios" checked>
                 Show English Version
                 <div id="rightPanel-main">
                     <br>
@@ -126,22 +126,36 @@
 
 <script>
     $('#languageSwitch').change(function () {
-        if (this.checked === true) {
-            const currentURlInIFRAME = document.getElementById("iframeID").contentWindow.location.href;
-            document.getElementById('iframeID').src = currentURlInIFRAME.replace("/np/", "/en/");
 
-        } else {
-            //not checked case
-            const currentURlInIFRAME = document.getElementById("iframeID").contentWindow.location.href;
-            document.getElementById('iframeID').src = currentURlInIFRAME.replace("/en/", "/np/");
-        }
-    });
+        RepaintIframeWithTranslations(reload = true)
+    })
 
     function GetPathOfThisPage() {
         document.getElementById('iframeID').src = currentURlInIFRAME
     }
 
     not_first_page = 0;
+
+    function RepaintIframeWithTranslations(reload = false) {
+        if (reload) {
+            document.getElementById('iframeID').contentWindow.location.reload();
+            return
+        }
+
+        if (!$('#languageSwitch').prop('checked')) {
+
+            console.log("languageSwitchlanguageSwitch")
+
+            globalTranslationBucket.forEach(e => {
+                if (CheckIfEditXPathExistsInGlobalBucket(e[1].EditxPath) !== "") {
+                    nodex = getElementByXPath(e[1].EditxPath)
+                    nodex.innerHTML = nodex.innerHTML.replace(e[1].Original, e[1].Submission)
+                }
+            });
+        }
+    }
+
+    iFrameReloadRemaining = 1;
 
     function IframePageChanged(location) {
         {#mousedown, mouseup, click#}
@@ -161,6 +175,8 @@
         }
         //click right
         $("#iframeID").contents().on("contextmenu", function (e) {
+                iFrameReloadRemaining = 1;
+
                 e.stopPropagation();
                 e.preventDefault()
                 {% if not user.is_authenticated %}
@@ -204,7 +220,11 @@
             },
             success: function (data) {
                 console.log(data);
-                globalTranslationBucket = data
+                globalTranslationBucket = Object.entries(JSON.parse(data))
+
+                RepaintIframeWithTranslations(force = iFrameReloadRemaining)
+                iFrameReloadRemaining = 0;
+
             },
 
         });
@@ -213,7 +233,7 @@
     globalTranslationBucket = []
 
     function CheckIfEditXPathExistsInGlobalBucket(path) {
-        matches = globalTranslationBucket.filter(e => e.EditxPath === path)
+        matches = globalTranslationBucket.filter(e => e[1].EditxPath === path)
         if (matches.length) {
             return matches[0].Submission
         } else return ""
@@ -421,17 +441,29 @@
     }
 
     function transsubmitbutton() {
+
         $('#transsubmitbutton').prop('disabled', true);
+
+        EditURL = document.getElementById('iframeID').contentWindow.location.pathname;
+        EditxPath = $("#translateTextArea").attr('divname');
+        Submission = "" + $("#translateTextArea").val();
+        Placeholder = $("#translateTextArea").attr('placeholder')
+        OldTransData = $("#translateTextArea").attr('oldTransData')
+
+
+        if (Submission === OldTransData) {
+            $.notify("No Visible Change to submit.", {
+                position: "left bottom", autoHideDelay: 2000, className: 'error',
+            });
+            $('#transsubmitbutton').prop('disabled', false);
+            return
+        }
+
+
         if (confirm('Are you sure to submit your edit?')) {
             $.notify("Submitting. . .", {
                 position: "left bottom", autoHideDelay: 2000, className: 'notice',
             });
-
-            EditURL = document.getElementById('iframeID').contentWindow.location.pathname;
-            EditxPath = $("#translateTextArea").attr('divname');
-            Submission = "" + $("#translateTextArea").val();
-            Placeholder = $("#translateTextArea").attr('placeholder')
-            OldTransData = $("#translateTextArea").attr('oldTransData')
 
             $.ajax({
                 type: "POST",
@@ -453,6 +485,9 @@
                         position: "left bottom", autoHideDelay: 2000, className: 'success',
                     });
                     displayDiff(Submission, OldTransData, divname = "displayDiff")
+
+                    RepaintIframeWithTranslations(force = iFrameReloadRemaining)
+                    iFrameReloadRemaining = 0;
 
                 },
 

@@ -1,7 +1,7 @@
+import pandas as pd
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.db.models import Max
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from rest_framework.authtoken.models import Token
@@ -97,12 +97,17 @@ def resolveURL(request):
         return HttpResponse('Unauthorized', status=401)
     EditURL = request.POST.get('EditURL')
 
-    contributions = Contribution.objects.filter(EditURL=EditURL).annotate(
-        latest_date=Max('created')).values('Submission', "EditxPath", 'User__username')
+    contributions_q = Contribution.objects.filter(EditURL=EditURL).values("id", 'Original', 'Submission', "EditxPath", 'User__username',
+                                                                          'created')
+    df = pd.DataFrame(list(contributions_q))
+    if (len(df)):
+        df = df[df.groupby(['EditxPath'])['id'].transform(max) == df['id']]
+    # contributions = Contribution.objects.filter(EditURL=EditURL).annotate(
+    #     latest_date=Max('created')).values('Submission', "EditxPath", 'User__username')
 
     # html = urlopen(url).read()
     # data = list(OrderedDict.fromkeys(text_from_html(html)))
-    return JsonResponse(list(contributions), safe=False)
+    return JsonResponse(df.to_json(orient='index'), safe=False)
 
 
 def SubmitContributions(request):
