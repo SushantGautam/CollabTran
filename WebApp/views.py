@@ -113,9 +113,10 @@ def SubmitContributions(request):
     Submission = request.POST.get("Submission")
     EditURL = request.POST.get('EditURL')
     EditxPath = request.POST.get('EditxPath')
+    Original = request.POST.get('Original')
     try:
         contribution = Contribution.objects.create(User=User, Submission=Submission, EditURL=EditURL,
-                                                   EditxPath=EditxPath)
+                                                   EditxPath=EditxPath, Original=Original)
         if contribution.getDifference():
             contribution.save()
 

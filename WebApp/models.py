@@ -10,7 +10,8 @@ class Contribution(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     User = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
-    Submission = models.TextField(max_length=100000, default="")
+    Original = models.TextField(max_length=10000000, default="")
+    Submission = models.TextField(max_length=10000000, default="")
     EditURL = models.TextField(max_length=100000, null=False, blank=False)
     EditxPath = models.TextField(max_length=100000, null=False, blank=False)
 
