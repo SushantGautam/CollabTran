@@ -470,7 +470,7 @@
                         <hr>`
                     if (Submission) {
                         $("#translate-list")[0].innerHTML += `
-                    <p id="CurrentdivlastEditedBy"> Last edited by: <a href="/Contribution/detail/` + Submission.id + `">` + Submission.User__username + ` </a><p>
+                    <p id="CurrentdivlastEditedBy"><a href="/Contribution/detail/` + Submission.id + `"> Last edited by: ` + Submission.User__username + ` </a><p>
                     <p> <small>Edited ` + Submission.TotalEditsOnThisElement + ` times before.</small></p>
                     <p id="CurrentDivID"> Current Element ID:<br><input  size="10" value='` + Submission.EditxPath + `'> <p>
                     `
