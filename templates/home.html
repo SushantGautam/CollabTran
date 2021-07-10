@@ -619,7 +619,7 @@
 
                 setTimeout(function () {
                     try {
-                        handleNewTextElement(getElementByXPath('{{ navigateToID|safe }}'), edit = true)
+                        handleNewTextElement(getElementByXPath(unescape('{{ navigateToID|safe }}')), edit = true)
                     } catch (e) {
                         console.log("navigateToID failed with: ", e)
                     }
