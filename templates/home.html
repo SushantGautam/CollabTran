@@ -616,6 +616,10 @@
             document.getElementById('iframeID').contentWindow.location.pathname = "{{ navigateToPage }}"
 
             {%  if navigateToID %}
+                $.notify("Loading element . . ", {
+                    position: "left bottom", className: 'notice',
+                    autoHideDelay: 3500
+                });
 
                 setTimeout(function () {
                     try {
@@ -624,6 +628,8 @@
                         console.log("navigateToID failed with: ", e)
                     }
                 }, 3000);
+
+
             {%  endif %}
 
         }, 1000);
