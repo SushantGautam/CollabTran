@@ -40,7 +40,7 @@
             </p> {% endif %}
 
             {% if usr %}<p>User: <a href="/Profile?usr={{ usr }}">{{ usr }}</a><a href="#"
-                                                                                      onclick='window.location.search = jQuery.query.set("usr", "None") '>
+                                                                                  onclick='window.location.search = jQuery.query.set("usr", "None") '>
                 (Clear)</a>
             </p> {% endif %}
         </small>
@@ -79,19 +79,20 @@
 
             <div class="card">
                 <div class="card-body">
-                    <a href="{% url 'Contribution_detail' each.pk %}"><h5 class="card-title">#{{ each.id }}</h5></a>
+                    <a href="{% url 'Contribution_detail' each.pk %}"><h5 class="card-title">#{{ each.id }}</h5>
+                    </a>
                     {{ each.getDifference |safe }}
                     {#                <p class="card-text">{{ each.Submission }}</p>#}
                     <br>
                     <p class="card-text"><b>Path: </b> <input size="10" type="text" value="{{ each.EditURL }}">
                         <span class="card-text"><b>                     <a href="/?navigateToPage={{ each.EditURL }}"
                                                                            class="btn btn-sm btn-primary">Go To Page</a> <a
-                                href="/Contribution/?path={{ each.EditURL }}" class="btn btn-sm btn-primary">All Edits on Page</a>
+                                href="/contribution/?path={{ each.EditURL }}" class="btn btn-sm btn-primary">All Edits on Page</a>
 
                             &nbsp;
                             &nbsp;
                             ElemID: </b> <input size="10" type="text" value="{{ each.EditxPath }}">
-                        <a href="/Contribution/?elementID={{ each.EditxPath }}"
+                        <a href="/contribution/?elementID={{ each.EditxPath }}"
                            class="btn btn-sm btn-primary">All Edits in this ID</a>
                             {% if user.is_authenticated %}
                                 <a href="/?navigateToPage={{ each.EditURL }}&navigateToID={{ each.EditxPath }}"
@@ -100,20 +101,28 @@
                             {% endif %}
                         </span></p>
                     <p class="card-text"><b></b>{{ each.created|naturaltime }} by <a
-                            href="/Profile?usr={{ each.User.username }}"> {{ each.User }} </a></p>
+                            href="/Profile?usr={{ each.User.username }}"> {{ each.User }}</a> |
+                        <span id="span{{ each.id }}">    <script>
+                            var idcomments_acct = 'aa88f90a326f37e0b859699a06705825';
+                            var idcomments_post_id = "{{ each.id }}";
+                            var idcomments_post_url;
+                        </script>
+
+                        <script type="text/javascript"
+                                src="https://www.intensedebate.com/js/genericLinkWrapperV2.js"></script>
+                        <script>
+                            $("#span{{ each.id }}").click(function (e) {
+                                e.preventDefault();
+                                document.location.href = document.location.origin + "{% url 'Contribution_detail' each.pk %}\#idc-container"
+                            });
+
+                        </script>
+                    </span>
+
+                    </p>
                 </div>
             </div>
 
-
-
-            {#            <div>#}
-            {#            <p>   {{ each.Submission }}</p>#}
-            {#            <p>   {{ each.EditxPath }}</p>#}
-            {#            <p>   {{ each.EditURL }}</p>#}
-            {#            <p>   {{ each.User__username }}</p>#}
-            {#            <p>   {{ each.User__username }}</p>#}
-            {#            <p>   Latest of {{ each.TotalEditsOnThisPage.count }} edits</p>#}
-            {#            </div>#}
         {% endfor %}
 
     {% else %}

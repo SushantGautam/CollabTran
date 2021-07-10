@@ -33,7 +33,7 @@
                 <td>Path</td>
                 <td>{{ object.EditURL }}<br>
                     <a href="/?navigateToPage={{ object.EditURL }}" class="btn btn-sm btn-primary">Go To Page</a> <a
-                            href="/Contribution/?filter_val={{ object.EditURL }}" class="btn btn-sm btn-primary">All
+                            href="/contribution/?filter_val={{ object.EditURL }}" class="btn btn-sm btn-primary">All
                         Edits
                         in
                         this Page</a></td>
@@ -41,7 +41,7 @@
             <tr>
                 <td>ElemID</td>
                 <td>{{ object.EditxPath }}<br>
-                    <a href="/Contribution/?elementID={{ object.EditxPath }}"
+                    <a href="/contribution/?elementID={{ object.EditxPath }}"
                        class="btn btn-sm btn-primary">All Edits in this ID</a>
                     {% if user.is_authenticated %}
                         <a href="/?navigateToPage={{ object.EditURL }}&navigateToID={{ object.EditxPath }}"
@@ -57,7 +57,7 @@
 
     <script>
         var idcomments_acct = 'aa88f90a326f37e0b859699a06705825';
-        var idcomments_post_id;
+        var idcomments_post_id ="{{ object.id  }}";
         var idcomments_post_url;
     </script>
     <span id="IDCommentsPostTitle" style="display:none"></span>

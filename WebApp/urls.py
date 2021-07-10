@@ -28,9 +28,9 @@ urlpatterns += (
 )
 
 urlpatterns += (
-    path("Contribution/", views.ContributionListView.as_view(), name="Contribution_list"),
+    path("contribution/", views.ContributionListView.as_view(), name="Contribution_list"),
     # path("Contribution/create/", views.ContributionCreateView.as_view(), name="Contribution_create"),
-    path("Contribution/detail/<int:pk>/", views.ContributionDetailView.as_view(),
+    path("contribution/detail/<int:pk>/", views.ContributionDetailView.as_view(),
          name="Contribution_detail"),
     # path("Contribution/update/<int:pk>/", views.ContributionUpdateView.as_view(),
     #      name="Contribution_update"),

@@ -279,7 +279,7 @@
             $("#rightPanel-translate").show()
             $("#translate-list")[0].innerHTML = ` <p> Right Click any of the text on the page to translate.</p>
                 <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
-                <a href="/Contribution/?path=` + document.getElementById('iframeID').contentWindow.location.pathname + `">
+                <a href="/contribution/?path=` + document.getElementById('iframeID').contentWindow.location.pathname + `">
                 <p> Total Edits On This Page: </a><span>` + TotalEditsOnThisPage + `</span>
                         </p>`
             $("#translate-list")[0].innerHTML += LastContributedInThisPageBy
@@ -470,7 +470,7 @@
                         <hr>`
                     if (Submission) {
                         $("#translate-list")[0].innerHTML += `
-                    <p id="CurrentdivlastEditedBy"><a href="/Contribution/detail/` + Submission.id + `"> Last edited by: ` + Submission.User__username + ` </a><p>
+                    <p id="CurrentdivlastEditedBy"><a href="/contribution/detail/` + Submission.id + `"> Last edited by: ` + Submission.User__username + ` </a><p>
                     <p> <small>Edited ` + Submission.TotalEditsOnThisElement + ` times before.</small></p>
                     <p id="CurrentDivID"> Current Element ID:<br><input  size="10" value='` + Submission.EditxPath + `'> <p>
                     `
