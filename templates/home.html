@@ -87,6 +87,13 @@
                             LeaderBoard
                         </button>
                     </a>
+                    <hr>
+                    <a href="{% url 'Contribution_list' %}">
+                        <button id="Contribution" type="button" class="btn btn-success">
+                            <img src="https://img.icons8.com/material-two-tone/24/000000/writer-male.png"/>
+                            Contributions
+                        </button>
+                    </a>
                     <br>
                     <br>
                     <div>
@@ -271,7 +278,8 @@
             $("#rightPanel-translate").show()
             $("#translate-list")[0].innerHTML = ` <p> Right Click any of the text on the page to translate.</p>
                 <p> Total Elements Edited On This Page: <span>` + TotalElementsEditedOnThisPage + `</span>
-                        <p> Total Edits On This Page: <span>` + TotalEditsOnThisPage + `</span>
+                <a href="/Contribution/?path=` + document.getElementById('iframeID').contentWindow.location.pathname + `">
+                <p> Total Edits On This Page: </a><span>` + TotalEditsOnThisPage + `</span>
                         </p>`
 
 
@@ -461,7 +469,7 @@
                         <hr>`
                     if (Submission) {
                         $("#translate-list")[0].innerHTML += `
-                    <p id="CurrentdivlastEditedBy"> Last edited by: <a href="#">` + Submission.User__username + ` </a><p>
+                    <p id="CurrentdivlastEditedBy"> Last edited by: <a href="/Contribution/detail/` + Submission.id + `">` + Submission.User__username + ` </a><p>
                     <p> <small>Edited ` + Submission.TotalEditsOnThisElement + ` times before.</small></p>
                     <p id="CurrentDivID"> Current Element ID:<br><input  size="10" value='` + Submission.EditxPath + `'> <p>
                     `
@@ -606,7 +614,20 @@
     {%  if navigateToPage %}
         setTimeout(function () {
             document.getElementById('iframeID').contentWindow.location.pathname = "{{ navigateToPage }}"
+
+            {%  if navigateToID %}
+
+                setTimeout(function () {
+                    try {
+                        handleNewTextElement(getElementByXPath('{{ navigateToID|safe }}'), edit = true)
+                    } catch (e) {
+                        console.log("navigateToID failed with: ", e)
+                    }
+                }, 3000);
+            {%  endif %}
+
         }, 1000);
     {%  endif %}
+
 
 </script>

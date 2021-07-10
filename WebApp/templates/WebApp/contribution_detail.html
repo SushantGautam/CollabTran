@@ -1,19 +1,53 @@
-
 {% extends "base.html" %}
-{% load static %}
+{% load static %}{% load humanize %}
 {% block content %}
-    
-<p>
-    <a class="btn btn-light" href="{% url 'WebApp_Contribution_list' %}">
-    Contribution Listing
-    </a>
-</p>
-    
-<table class="table">
-    <tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
-    <tr><td>created</td><td>{{ object.created }}</td></tr>
-    <tr><td>User</td><td>{{ object.User }}</td></tr>
-</table>
-<a class="btn btn-primary" href="{{object.get_update_url}}">Edit</a>
+
+    <p>
+        <a class="btn btn-light" href="{% url 'Contribution_list' %}">
+            Contribution Listing
+        </a>
+    </p>
+
+    <table class="table">
+        <tr>
+            <td>created</td>
+            <td>{{ object.created|naturaltime }}</td>
+        </tr>
+        <tr>
+            <td>User</td>
+            <td>{{ object.User }}</td>
+        </tr>
+        <tr>
+            <td>Diff</td>
+            <td>{{ object.getDifference |safe }}</td>
+        </tr>
+        <tr>
+            <td>Original</td>
+            <td>{{ object.Original }}</td>
+        </tr>
+        <tr>
+            <td>Submission</td>
+            <td>{{ object.Submission }}</td>
+        </tr>
+        <tr>
+            <td>Path</td>
+            <td>{{ object.EditURL }}<br>
+                <a href="/?navigateToPage={{ object.EditURL }}" class="btn btn-sm btn-primary">Go To Page</a> <a
+                        href="/Contribution/?filter_val={{ object.EditURL }}" class="btn btn-sm btn-primary">All Edits
+                    in
+                    this Page</a></td>
+        </tr>
+        <tr>
+            <td>ElemID</td>
+            <td>{{ object.EditxPath }}<br>
+                <a href="/Contribution/?elementID={{ object.EditxPath }}"
+                   class="btn btn-sm btn-primary">All Edits in this ID</a>
+                <a href="/?navigateToPage={{ object.EditURL }}&navigateToID={{ object.EditxPath }}"
+                   class="btn btn-sm btn-primary"><img src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"/>Edit this Element</a>
+            </td>
+            </td> </tr>
+
+
+    </table>
 
 {% endblock %}

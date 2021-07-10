@@ -1,4 +1,4 @@
-from difflib import Differ
+from difflib import HtmlDiff
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -16,16 +16,19 @@ class Contribution(models.Model):
     EditxPath = models.TextField(max_length=100000, null=False, blank=False)
 
     class Meta:
-        pass
+        ordering = ['-id']
 
     def __str__(self):
         return str(self.pk)
 
     def get_absolute_url(self):
-        return reverse("WebApp_Contribution_detail", args=(self.pk,))
+        return reverse("Contribution_detail", args=(self.pk,))
 
     def get_update_url(self):
-        return reverse("WebApp_Contribution_update", args=(self.pk,))
+        return reverse("Contribution_update", args=(self.pk,))
+
+    def TotalEditsOnThisPage(self):
+        return Contribution.objects.filter(EditURL=self.EditURL)
 
     def getDifference(self):
         justOlderValue = ""
@@ -35,9 +38,7 @@ class Contribution(models.Model):
             justOlderValue = contribution[0].Submission
         # return " ".join(list(Differ().compare(.split(), )))
 
-        diff = " ".join(
-            [i for i in list(Differ().compare(justOlderValue.split(), self.Submission.split())) if i != '? ^\n'])
-        return diff
+        return HtmlDiff(wrapcolumn=50).make_file([justOlderValue], [self.Submission])
 
 
 class Urls(models.Model):
@@ -53,7 +54,7 @@ class Urls(models.Model):
         return str(self.pk)
 
     def get_absolute_url(self):
-        return reverse("WebApp_Urls_detail", args=(self.pk,))
+        return reverse("Urls_detail", args=(self.pk,))
 
     def get_update_url(self):
-        return reverse("WebApp_Urls_update", args=(self.pk,))
+        return reverse("Urls_update", args=(self.pk,))

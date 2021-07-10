@@ -1,8 +1,114 @@
-
 {% extends "base.html" %}
+{% load humanize %}
+
+{% block heading %}Contribution{% endblock %}
 {% block content %}
-{% for object in object_list %}
-  <div class="m-2"><a href="{{object.get_absolute_url}}">{{object}}</a></div>
-{% endfor %}
-<div><a class="btn btn-primary" href="{% url 'WebApp_Contribution_create' %}">Create a new Contribution</a></div>
+    <style>
+        table[summary="Legends"] {
+            display: none
+        }
+
+        .diff_next {
+            display: none
+        }
+    </style>
+
+    <form method="get" action="#">
+        {#            <p>URL: <input type="text" value="{{ path }}" name="path"/></p>#}
+        {#            <p>ElemID: <input type="text" value="{{ elementID }}" name="elementID"/></p>#}
+        <p><input type="text" placeholder="Search all contributions"
+                  value="{% if searchSubmission %}{{ searchSubmission }}{% endif %}"
+                  name="searchSubmission"/>
+            <input type="submit" name="submit" value="submit"/></p>
+    </form>
+
+    {% if path or elementID or searchSubmission %}
+        <small>
+            {% if path %}
+                <p>Path: {{ path }}<a href="#"
+                                      onclick='window.location.search = jQuery.query.set("path", "None") '>(Clear)</a>
+                </p> {% endif %}
+            {% if elementID %}<p>ElemID: {{ elementID }}<a href="#"
+                                                           onclick='window.location.search = jQuery.query.set("elementID", "None") '>(Clear)</a>
+            </p>{% endif %}
+            {% if searchSubmission %}<p>Search: {{ searchSubmission }}<a href="#"
+                                                                         onclick='window.location.search = jQuery.query.set("searchSubmission", "None") '>(Clear)</a>
+            </p> {% endif %}
+        </small>
+    {% endif %}
+
+    {% if object_list %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1"> First</a></li>
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> << Previous</a>
+
+                {% endif %} </li>
+
+                <li class="page-item"><a class="page-link"> Page {{ page_obj.number }}
+                    of {{ page_obj.paginator.num_pages }}.
+                </a></li>
+
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next >> </a>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last </a>
+
+                {% endif %}
+
+
+            </ul>
+        </nav>
+
+
+
+        {% for each in object_list %}
+
+            <div class="card">
+                <div class="card-body">
+                    <a href="{% url 'Contribution_detail' each.pk %}"><h5 class="card-title">#{{ each.id }}</h5></a>
+                    {{ each.getDifference |safe }}
+                    {#                <p class="card-text">{{ each.Submission }}</p>#}
+                    <br>
+                    <p class="card-text"><b>Path: </b> <input type="text" value="{{ each.EditURL }}">
+                        <span class="card-text"><b>                     <a href="/?navigateToPage={{ each.EditURL }}"
+                                                                           class="btn btn-sm btn-primary">Go To Page</a> <a
+                                href="/Contribution/?path={{ each.EditURL }}" class="btn btn-sm btn-primary">All Edits on Page</a>
+
+                            &nbsp;
+                            &nbsp;
+                            ElemID: </b> <input type="text" value="{{ each.EditxPath }}">
+                        <a href="/Contribution/?elementID={{ each.EditxPath }}"
+                           class="btn btn-sm btn-primary">All Edits in this ID</a>
+
+                        </span></p>
+                    <p class="card-text"><b></b>{{ each.created|naturaltime }} by <a
+                            href="#"> {{ each.User }} </a></p>
+                </div>
+            </div>
+
+
+
+            {#            <div>#}
+            {#            <p>   {{ each.Submission }}</p>#}
+            {#            <p>   {{ each.EditxPath }}</p>#}
+            {#            <p>   {{ each.EditURL }}</p>#}
+            {#            <p>   {{ each.User__username }}</p>#}
+            {#            <p>   {{ each.User__username }}</p>#}
+            {#            <p>   Latest of {{ each.TotalEditsOnThisPage.count }} edits</p>#}
+            {#            </div>#}
+        {% endfor %}
+
+    {% else %}
+        No Any
+    {% endif %}
+
+    <a href="/{% if  path %}?navigateToPage={{ path }}{% else %}{% endif %}">
+        <button type="button" class="btn btn-warning">Warning</button>
+    </a>
+
+
+
 {% endblock %}

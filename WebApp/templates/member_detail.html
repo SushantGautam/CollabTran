@@ -2,17 +2,16 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    
+
 <p>
-    <a class="btn btn-light" href="{% url 'WebApp_Member_list' %}">
+    <a class="btn btn-light" href="{% url 'Member_list' %}">
     Member Listing
     </a>
 </p>
-    
+
 <table class="table">
     <tr><td>created</td><td>{{ object.created }}</td></tr>
     <tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
 </table>
-<a class="btn btn-primary" href="{{object.get_update_url}}">Edit</a>
 
 {% endblock %}

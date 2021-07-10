@@ -1,3 +1,5 @@
+from urllib.parse import unquote
+
 import pandas as pd
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -64,16 +66,48 @@ from django.views import generic
 from . import models
 from . import forms
 
+from django_filters.views import FilterView
 
-class ContributionListView(generic.ListView):
+
+class ContributionListView(FilterView):
     model = models.Contribution
     form_class = forms.ContributionForm
-    paginate_by = 10  # and that's it !!
+    paginate_by = 5  # and that's it !!
+    template_name = "WebApp/contribution_list.html"
+
+    def get_queryset(self):
+        path = (self.request.GET.get('path', None))
+        elementID = (self.request.GET.get('elementID', None))
+        searchSubmission = (self.request.GET.get('searchSubmission', None))
+        new_context = Contribution.objects.all()
+        if (path and path != 'None'):
+            new_context = new_context.filter(EditURL=unquote(path))
+        if (elementID and elementID != 'None'):
+            new_context = new_context.filter(EditxPath=unquote(elementID))
+        if (searchSubmission and searchSubmission != 'None'):
+            new_context = new_context.filter(Submission__contains=searchSubmission)
+
+        return new_context
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['path'] = (self.request.GET.get('path', None))
+        context['elementID'] = (self.request.GET.get('elementID', None))
+        context['searchSubmission'] = (self.request.GET.get('searchSubmission', None))
+        if (context['path'] == 'None'):
+            context['path'] = None
+        if (context['elementID'] == 'None'):
+            context['elementID'] = None
+        if (context['searchSubmission'] == 'None'):
+            context['searchSubmission'] = None
+        return context
 
 
-class ContributionCreateView(generic.CreateView):
-    model = models.Contribution
-    form_class = forms.ContributionForm
+#
+# class ContributionCreateView(generic.CreateView):
+#     model = models.Contribution
+#     form_class = forms.ContributionForm
 
 
 class ContributionDetailView(generic.DetailView):
@@ -81,11 +115,12 @@ class ContributionDetailView(generic.DetailView):
     form_class = forms.ContributionForm
 
 
-class ContributionUpdateView(generic.UpdateView):
-    model = models.Contribution
-    form_class = forms.ContributionForm
-    pk_url_kwarg = "pk"
-
+#
+# class ContributionUpdateView(generic.UpdateView):
+#     model = models.Contribution
+#     form_class = forms.ContributionForm
+#     pk_url_kwarg = "pk"
+#
 
 class UrlsListView(generic.ListView):
     model = models.Urls
@@ -147,10 +182,8 @@ def home(request, token=None):
     if request.user.is_authenticated:
         token = Token.objects.get_or_create(user=request.user)[0].key
         navigateToPage = request.GET.get('navigateToPage', None)
-        return render(request, 'home.html', context={"token": token, "navigateToPage": navigateToPage})
-
-
-class EachPageView(generic.ListView):
-    model = Contribution
-    paginate_by = 5
-    template_name = "WebApp/page.html"
+        navigateToID = request.GET.get('navigateToID', None)
+        return render(request, 'home.html', context={"token": token,
+                                                     "navigateToPage": navigateToPage,
+                                                     "navigateToID": navigateToID,
+                                                     })
