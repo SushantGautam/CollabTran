@@ -40,6 +40,21 @@ class Contribution(models.Model):
 
         return HtmlDiff(wrapcolumn=40).make_file([justOlderValue], [self.Submission])
 
+    def countVote(self, user=None):
+        OnlyCount_data = {"U": Votes.objects.filter(contribution=self, type="U").count(),
+                          "D": Votes.objects.filter(contribution=self, type="D").count(),
+                          "T": Votes.objects.filter(contribution=self, type="U").count() - Votes.objects.filter(
+                              contribution=self, type="D").count(),
+                          }
+        if not user:
+            return OnlyCount_data
+        else:
+            obj = Votes.objects.filter(contribution=self, voter=user)
+            if (obj):
+                return obj[0].type
+
+        return OnlyCount_data
+
 
 class Votes(models.Model):
     # Fields
@@ -47,7 +62,7 @@ class Votes(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     contribution = models.ForeignKey(Contribution, on_delete=models.CASCADE)
     voter = models.ForeignKey(User, on_delete=models.CASCADE)
-    type = models.CharField(max_length=1, choices=(('U', 'UpVote'), ('D', 'UpVote'),))
+    type = models.CharField(max_length=1, choices=(('U', 'UpVote'), ('D', 'UpVote'),), null=True, blank=True)
 
     class Meta:
         pass

@@ -4,6 +4,7 @@ from urllib.parse import unquote
 import pandas as pd
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
@@ -13,7 +14,7 @@ from django_filters.views import FilterView
 from rest_framework.authtoken.models import Token
 
 from . import models, forms
-from .models import Contribution
+from .models import Contribution, Votes
 
 
 def signup(request):
@@ -222,3 +223,17 @@ def home(request, token=None):
 
 def getUserContributions(user):
     return {"daily": 10}
+
+
+@login_required
+def SubmitVote(request):
+    contribution = Contribution.objects.get(pk=int(request.POST.get('submissionID')))
+    type = request.POST.get('vote')
+    obj, created = Votes.objects.get_or_create(voter=request.user, contribution=contribution)
+    if (obj.type == type):
+        obj.delete()
+    else:
+        obj.type = type
+        obj.save()
+
+    return JsonResponse({"countVote": contribution.countVote(), "My": contribution.countVote(request.user)})

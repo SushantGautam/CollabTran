@@ -40,5 +40,6 @@ urlpatterns += (
 urlpatterns += (
     path('resolveURL', views.resolveURL, name='resolveURL'),
     path('SubmitContributions', views.SubmitContributions, name='SubmitContributions'),
+    path('SubmitVote', views.SubmitVote, name='SubmitVote'),
 
 )

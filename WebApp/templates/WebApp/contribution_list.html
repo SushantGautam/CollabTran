@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load humanize %}
-
+{% load call_method %}
 {% block heading %}{% if usr %}{{ usr }} | User {% endif %}Contribution{% endblock %}
 {% block title %}{% if usr %}{{ usr }} | User {% endif %}Contribution{% endblock %}
 
@@ -84,25 +84,75 @@
                     {{ each.getDifference |safe }}
                     {#                <p class="card-text">{{ each.Submission }}</p>#}
                     <br>
-                    <p class="card-text"><b>Path: </b> <input size="10" type="text" value="{{ each.EditURL }}">
-                        <span class="card-text"><b>                     <a href="/?navigateToPage={{ each.EditURL }}"
-                                                                           class="btn btn-sm btn-primary">Go To Page</a> <a
-                                href="/contribution/?path={{ each.EditURL }}" class="btn btn-sm btn-primary">All Edits on Page</a>
+                    <div class="row">
+                        <div class="col-3">
+
+                            <div id="vote{{ each.id }}" class="upvote">
+                                <a id="upvote{{ each.id }}" class="upvote"></a>
+                                <span class="count" id="count{{ each.id }}">{{ each.countVote.T }}</span>
+                                <a id="downvote{{ each.id }}" class="downvote"></a>
+                                <span class="small"
+                                      id="voteText{{ each.id }}"> +{{ each.countVote.U }}, -{{ each.countVote.D }}</span>
+                            </div>
+
+                            <script>
+                                setTimeout(function () {
+
+                                    {% if  user.is_authenticated %}
+                                        switch ("{% call_method each 'countVote' request.user %}") {
+                                            case "D":
+                                                // code block
+                                                $('#downvote{{ each.id }}').css("background-color", "yellow");
+                                                $('#upvote{{ each.id }}').css("background-color", "");
+                                                break;
+                                            case "U":
+                                                // code block
+                                                $('#upvote{{ each.id }}').css("background-color", "yellow");
+                                                $('#downvote{{ each.id }}').css("background-color", "");
+                                                break;
+                                            default:
+                                                $('#upvote{{ each.id }}').css("background-color", "");
+                                                $('#downvote{{ each.id }}').css("background-color", "");
+
+                                            // code block
+                                        }
+                                        $('#vote{{ each.id }}').upvote({count:{{ each.countVote.T }}});
+                                    {% endif %}
+
+                                    $('#upvote{{ each.id }}').click(function () {
+                                        vote(upvote = true, submissionID ={{ each.id }})
+                                    })
+                                    $('#downvote{{ each.id }}').click(function () {
+                                        vote(upvote = false, submissionID = {{ each.id }})
+                                    })
+
+                                }, 0);
+
+
+                            </script>
+
+                        </div>
+                        <div class="col-9">
+                            <p class="card-text"><b>Path: </b> <input size="10" type="text" value="{{ each.EditURL }}">
+                                <span class="card-text"><b>                     <a
+                                        href="/?navigateToPage={{ each.EditURL }}"
+                                        class="btn btn-sm btn-primary">Go To Page</a> <a
+                                        href="/contribution/?path={{ each.EditURL }}" class="btn btn-sm btn-primary">All Edits on Page</a>
 
                             &nbsp;
-                            &nbsp;
+                            &nbsp;<br>
                             ElemID: </b> <input size="10" type="text" value="{{ each.EditxPath }}">
                         <a href="/contribution/?elementID={{ each.EditxPath }}"
                            class="btn btn-sm btn-primary">All Edits in this ID</a>
-                            {% if user.is_authenticated %}
-                                <a href="/?navigateToPage={{ each.EditURL }}&navigateToID={{ each.EditxPath }}"
-                                   class="btn btn-sm btn-primary"><img
-                                        src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"/></a>
-                            {% endif %}
+                                    {% if user.is_authenticated %}
+                                        <a href="/?navigateToPage={{ each.EditURL }}&navigateToID={{ each.EditxPath }}"
+                                           class="btn btn-sm btn-primary"><img
+                                                src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"/></a>
+                                    {% endif %}
                         </span></p>
-                    <p class="card-text"><b></b>{{ each.created|naturaltime }} by <a
-                            href="/Profile?usr={{ each.User.username }}"> {{ each.User }}</a> |
-                        <span id="span{{ each.id }}">    <script>
+                            <p class="card-text"><b></b>{{ each.created|naturaltime }} by <a
+                                    href="/Profile?usr={{ each.User.username }}"> {{ each.User }}</a> |
+                                <span id="span{{ each.id }}">    <script>
                             var idcomments_acct = 'aa88f90a326f37e0b859699a06705825';
                             var idcomments_post_id = "{{ each.id }}";
                             var idcomments_post_url;
@@ -119,9 +169,12 @@
                         </script>
                     </span>
 
-                    </p>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
         {% endfor %}
 
@@ -138,5 +191,58 @@
     {% endif %}
 
 
+    <script>
+        function vote(upvote = true, submissionID) {
+            {% if not user.is_authenticated %}
+                if (confirm('You need to be logged in to Vote. Login?')) {
+                    location.href = '/login'
+                } else {
+                    return
+                }
 
+            {% endif %}
+
+            voteC = "D";
+            if (upvote !== false) voteC = "U"
+
+
+            $.ajax({
+                type: "POST",
+                url: '/SubmitVote',
+
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    submissionID: submissionID,
+                    vote: voteC
+                },
+                success: function (data, textStatus, errorThrown) {
+                    setTimeout(function () {
+                        console.log(data)
+                        $("#count" + submissionID).text(data['countVote']['T'])
+                        $("#voteText" + submissionID).text("+" + data['countVote']['U'] + ", -" + data['countVote']['D'])
+
+                        switch (data["My"]) {
+                            case "D":
+                                // code block
+                                $('#downvote' + submissionID).css("background-color", "yellow");
+                                $('#upvote' + submissionID).css("background-color", "");
+                                break;
+                            case "U":
+                                // code block
+                                $('#upvote' + submissionID).css("background-color", "yellow");
+                                $('#downvote' + submissionID).css("background-color", "");
+                                break;
+                            default:
+                                $('#upvote' + submissionID).css("background-color", "");
+                                $('#downvote' + submissionID).css("background-color", "");
+                            // code block
+                        }
+                    }, 0);
+                },
+
+                error: function (jqXHR, textStatus, errorThrown) {
+                }
+            })
+        }
+    </script>
 {% endblock %}
