@@ -1,11 +1,10 @@
 from django.conf.urls import url
-from django.contrib.auth.decorators import login_required
 from django.urls import include
 from django.urls import path
-from django.views.generic import TemplateView
 from rest_framework import routers
+
 from . import views
-from .views import signup, LeaderBoard, MyProfile, logout_request, login_request
+from .views import signup, LeaderBoard, MyProfile, logout_request, login_request, EachPageView
 
 router = routers.DefaultRouter()
 
@@ -18,6 +17,7 @@ urlpatterns += (
     path('', views.home, name='index'),
     path('navigateToPage', views.home, name='index'),
     path('LeaderBoard', LeaderBoard, name='LeaderBoard'),
+    path('Page', EachPageView.as_view(), name='Page'),
 )
 
 urlpatterns += (

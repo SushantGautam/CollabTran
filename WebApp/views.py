@@ -148,3 +148,9 @@ def home(request, token=None):
         token = Token.objects.get_or_create(user=request.user)[0].key
         navigateToPage = request.GET.get('navigateToPage', None)
         return render(request, 'home.html', context={"token": token, "navigateToPage": navigateToPage})
+
+
+class EachPageView(generic.ListView):
+    model = Contribution
+    paginate_by = 5
+    template_name = "WebApp/page.html"
