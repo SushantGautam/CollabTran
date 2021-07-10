@@ -98,7 +98,7 @@
                     <br>
                     <div>
                         {% if user.is_authenticated %}
-                            <p>Welcome <a href="{% url 'MyProfile' %}">{{ user.username }}</a> !!!</p>
+                            <p>Welcome <a href="{% url 'Profile' %}">{{ user.username }}</a> !!!</p>
                             <p><a href="{% url 'logout' %}">Sign Out</a></p>
                         {% else %}
                             <a class="nav-link" href="{% url 'login' %}">

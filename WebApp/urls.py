@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework import routers
 
 from . import views
-from .views import signup, LeaderBoard, MyProfile, logout_request, login_request
+from .views import signup, LeaderBoard, Profile, logout_request, login_request
 
 router = routers.DefaultRouter()
 
@@ -24,7 +24,7 @@ urlpatterns += (
     path("logout", logout_request, name="logout"),
     url(r'^login/$', login_request, name='login'),
 
-    path('MyProfile', MyProfile, name='MyProfile'),
+    path('Profile', Profile, name='Profile'),
 )
 
 urlpatterns += (

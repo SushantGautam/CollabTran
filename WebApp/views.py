@@ -4,10 +4,14 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.views import generic
+from django_filters.views import FilterView
 from rest_framework.authtoken.models import Token
 
+from . import models, forms
 from .models import Contribution
 
 
@@ -58,15 +62,21 @@ def LeaderBoard(request):
     return render(request, 'LeaderBoard.html', {'data': None})
 
 
-def MyProfile(request):
-    return render(request, 'MyProfile.html', {'data': None})
-
-
-from django.views import generic
-from . import models
-from . import forms
-
-from django_filters.views import FilterView
+def Profile(request):
+    user = (request.GET.get('user', None))
+    isMe = None
+    if not user or user == 'None':
+        if request.user.is_authenticated:
+            user = request.user
+            isMe = True
+        else:
+            messages.info(request, "You need to login to see your profile.")
+            return redirect('login')
+    else:
+        user = get_object_or_404(User, username=user)
+        if user == request.user:
+            isMe = True
+    return render(request, 'profile.html', {'data': getUserContributions(user), "user": user, 'isMe': isMe})
 
 
 class ContributionListView(FilterView):
@@ -187,3 +197,7 @@ def home(request, token=None):
                                                  "navigateToPage": navigateToPage,
                                                  "navigateToID": navigateToID,
                                                  })
+
+
+def getUserContributions(user):
+    return {"daily": 10}
