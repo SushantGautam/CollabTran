@@ -13,10 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
+from CollabTran import settings
 from CollabTran.views import gitpull
 
 urlpatterns = [
@@ -32,4 +34,4 @@ admin.site.site_header = 'CollabTran Administration'  # default: "Django Adminis
 admin.site.index_title = 'CollabTran Administration'  # default: "Site administration"
 admin.site.site_title = 'CollabTran Administration'  # default: "Django site admin"
 
-urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
