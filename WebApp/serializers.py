@@ -16,9 +16,11 @@ class ContributionSerializer(serializers.ModelSerializer):
 class UrlsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.Urls
+        model = models.Votes
         fields = [
             "last_updated",
             "created",
-            "path",
+            "contribution",
+            "voter",
+            "type",
         ]

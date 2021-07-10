@@ -41,11 +41,13 @@ class Contribution(models.Model):
         return HtmlDiff(wrapcolumn=40).make_file([justOlderValue], [self.Submission])
 
 
-class Urls(models.Model):
+class Votes(models.Model):
     # Fields
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable=False)
-    path = models.URLField()
+    contribution = models.ForeignKey(Contribution, on_delete=models.CASCADE)
+    voter = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=1, choices=(('U', 'UpVote'), ('D', 'UpVote'),))
 
     class Meta:
         pass
@@ -54,7 +56,7 @@ class Urls(models.Model):
         return str(self.pk)
 
     def get_absolute_url(self):
-        return reverse("Urls_detail", args=(self.pk,))
+        return reverse("Votes_detail", args=(self.pk,))
 
     def get_update_url(self):
-        return reverse("Urls_update", args=(self.pk,))
+        return reverse("Votes_update", args=(self.pk,))

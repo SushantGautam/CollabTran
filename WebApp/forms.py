@@ -10,9 +10,9 @@ class ContributionForm(forms.ModelForm):
         model = models.Contribution
         fields = ['User']
 
-class UrlsForm(forms.ModelForm):
+class VotesForm(forms.ModelForm):
     class Meta:
-        model = models.Urls
+        model = models.Votes
         fields = [
-            "path",
+            "contribution",
         ]

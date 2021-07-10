@@ -88,10 +88,10 @@
                         </button>
                     </a>
                     <hr>
-                    <a href="{% url 'Contribution_list' %}">
+                    <a href="{% url 'Profile' %}">
                         <button id="Contribution" type="button" class="btn btn-success">
                             <img src="https://img.icons8.com/material-two-tone/24/000000/writer-male.png"/>
-                            Contributions
+                            Profile
                         </button>
                     </a>
                     <br>
@@ -179,6 +179,7 @@
     iFrameReloadRemaining = 1;
     TotalElementsEditedOnThisPage = 0;
     TotalEditsOnThisPage = 0;
+    LastContributedInThisPageBy = "";
 
     function IframePageChanged(location) {
         {#mousedown, mouseup, click#}
@@ -233,7 +234,7 @@
                 globalTranslationBucket = Object.entries(JSON.parse(data['data']))
                 TotalEditsOnThisPage = data['TotalEditsOnThisPage']
                 TotalElementsEditedOnThisPage = data['TotalElementsEditedOnThisPage']
-
+                LastContributedInThisPageBy = data['LastContributedInThisPageBy']
 
                 RepaintIframeWithTranslations(force = iFrameReloadRemaining)
                 iFrameReloadRemaining = 0;
@@ -281,7 +282,7 @@
                 <a href="/Contribution/?path=` + document.getElementById('iframeID').contentWindow.location.pathname + `">
                 <p> Total Edits On This Page: </a><span>` + TotalEditsOnThisPage + `</span>
                         </p>`
-
+            $("#translate-list")[0].innerHTML += LastContributedInThisPageBy
 
         } else {
             $("#rightPanel-main").show()

@@ -1,3 +1,4 @@
+from collections import Counter
 from urllib.parse import unquote
 
 import pandas as pd
@@ -147,8 +148,8 @@ class ContributionDetailView(generic.DetailView):
 #
 
 class UrlsListView(generic.ListView):
-    model = models.Urls
-    form_class = forms.UrlsForm
+    model = models.Votes
+    form_class = forms.VotesForm
 
 
 def resolveURL(request):
@@ -163,11 +164,15 @@ def resolveURL(request):
 
     TotalElementsEditedOnThisPage = 0
     TotalEditsOnThisPage = 0
+    LastContributedInThisPageBy = ""
     if (len(df)):
         df['TotalEditsOnThisElement'] = df.groupby(['EditxPath'])['EditxPath'].transform('count')
         TotalElementsEditedOnThisPage = df[:].EditxPath.unique().__len__()
         TotalEditsOnThisPage = len(df)
         df = df[df.groupby(['EditxPath'])['id'].transform(max) == df['id']]
+        LastContributedInThisPageBy = "Top Contributors: " + "".join(
+            ['''<a href="/Profile?usr=''' + i[0] + '''"> ''' + i[0] + '''</a>, ''' for i in
+             Counter(df[:].User__username).most_common(3)])
     # contributions = Contribution.objects.filter(EditURL=EditURL).annotate(
     #     latest_date=Max('created')).values('Submission', "EditxPath", 'User__username')
 
@@ -175,7 +180,9 @@ def resolveURL(request):
     # data = list(OrderedDict.fromkeys(text_from_html(html)))
     return JsonResponse(
         {"data": df.to_json(orient='index'), "TotalElementsEditedOnThisPage": TotalElementsEditedOnThisPage,
-         "TotalEditsOnThisPage": TotalEditsOnThisPage},
+         "TotalEditsOnThisPage": TotalEditsOnThisPage,
+         "LastContributedInThisPageBy": LastContributedInThisPageBy,
+         },
         safe=False)
 
 
