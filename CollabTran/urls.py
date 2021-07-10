@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 from CollabTran.views import gitpull
@@ -30,3 +31,5 @@ from django.contrib import admin
 admin.site.site_header = 'CollabTran Administration'  # default: "Django Administration"
 admin.site.index_title = 'CollabTran Administration'  # default: "Site administration"
 admin.site.site_title = 'CollabTran Administration'  # default: "Django site admin"
+
+urlpatterns += staticfiles_urlpatterns()
