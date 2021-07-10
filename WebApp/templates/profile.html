@@ -3,5 +3,8 @@
 {% block heading %}{% if isMe %}My {% endif %}Profile {% endblock %}
 {% block title %}{% if isMe %}My {% endif %} Profile{% endblock %}
 {% block content %}
-    {{ data.daily }}
+
+
+    <br>
+    <a class="btn btn-primary" href="/Contribution/?usr={{ user.username }}">View User Contributions </a>
 {% endblock %}

@@ -38,7 +38,7 @@ class Contribution(models.Model):
             justOlderValue = contribution[0].Submission
         # return " ".join(list(Differ().compare(.split(), )))
 
-        return HtmlDiff(wrapcolumn=50).make_file([justOlderValue], [self.Submission])
+        return HtmlDiff(wrapcolumn=40).make_file([justOlderValue], [self.Submission])
 
 
 class Urls(models.Model):

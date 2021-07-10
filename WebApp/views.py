@@ -63,9 +63,9 @@ def LeaderBoard(request):
 
 
 def Profile(request):
-    user = (request.GET.get('user', None))
+    usr = (request.GET.get('usr', None))
     isMe = None
-    if not user or user == 'None':
+    if not usr or usr == 'None':
         if request.user.is_authenticated:
             user = request.user
             isMe = True
@@ -73,10 +73,10 @@ def Profile(request):
             messages.info(request, "You need to login to see your profile.")
             return redirect('login')
     else:
-        user = get_object_or_404(User, username=user)
+        user = get_object_or_404(User, username=usr)
         if user == request.user:
             isMe = True
-    return render(request, 'profile.html', {'data': getUserContributions(user), "user": user, 'isMe': isMe})
+    return render(request, 'profile.html', {'data': getUserContributions(user), "usr": user, 'isMe': isMe})
 
 
 class ContributionListView(FilterView):
@@ -89,6 +89,8 @@ class ContributionListView(FilterView):
         path = (self.request.GET.get('path', None))
         elementID = (self.request.GET.get('elementID', None))
         searchSubmission = (self.request.GET.get('searchSubmission', None))
+        user = (self.request.GET.get('user', None))
+
         new_context = Contribution.objects.all()
         if (path and path != 'None'):
             new_context = new_context.filter(EditURL=unquote(path))
@@ -96,6 +98,8 @@ class ContributionListView(FilterView):
             new_context = new_context.filter(EditxPath=unquote(elementID))
         if (searchSubmission and searchSubmission != 'None'):
             new_context = new_context.filter(Submission__contains=searchSubmission)
+        if (user and user != 'None'):
+            new_context = new_context.filter(User__username=user)
 
         return new_context
 
@@ -105,12 +109,22 @@ class ContributionListView(FilterView):
         context['path'] = (self.request.GET.get('path', None))
         context['elementID'] = (self.request.GET.get('elementID', None))
         context['searchSubmission'] = (self.request.GET.get('searchSubmission', None))
+        context['usr'] = (self.request.GET.get('usr', None))
         if (context['path'] == 'None'):
             context['path'] = None
         if (context['elementID'] == 'None'):
             context['elementID'] = None
         if (context['searchSubmission'] == 'None'):
             context['searchSubmission'] = None
+        if (context['usr'] == 'None' or context['usr'] == None):
+            context['usr'] = None
+        else:
+            context['usr'] = get_object_or_404(User, username=context['usr'])
+        context['paginationTrail'] = ""
+        if context['path']: context['paginationTrail'] += "&path=" + context['path']
+        if context['elementID']: context['paginationTrail'] += "&elementID=" + context['elementID']
+        if context['searchSubmission']: context['paginationTrail'] += "&searchSubmission=" + context['searchSubmission']
+        if context['usr']: context['paginationTrail'] += "&usr=" + context['usr'].username
         return context
 
 

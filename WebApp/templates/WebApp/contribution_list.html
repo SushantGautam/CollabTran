@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load humanize %}
 
-{% block heading %}Contribution{% endblock %}
+{% block heading %}{% if usr %}{{ usr }} | User {% endif %}Contribution{% endblock %}
+{% block title %}{% if usr %}{{ usr }} | User {% endif %}Contribution{% endblock %}
+
 {% block content %}
     <style>
         table[summary="Legends"] {
@@ -12,27 +14,34 @@
             display: none
         }
     </style>
-
-    <form method="get" action="#">
-        {#            <p>URL: <input type="text" value="{{ path }}" name="path"/></p>#}
-        {#            <p>ElemID: <input type="text" value="{{ elementID }}" name="elementID"/></p>#}
-        <p><input type="text" placeholder="Search all contributions"
-                  value="{% if searchSubmission %}{{ searchSubmission }}{% endif %}"
-                  name="searchSubmission"/>
-            <input type="submit" name="submit" value="submit"/></p>
-    </form>
-
-    {% if path or elementID or searchSubmission %}
+    {% if not usr %}
+        <form method="get" action="#">
+            {#            <p>URL: <input type="text" value="{{ path }}" name="path"/></p>#}
+            {#            <p>ElemID: <input type="text" value="{{ elementID }}" name="elementID"/></p>#}
+            <p><input type="text" placeholder="Search all contributions"
+                      value="{% if searchSubmission %}{{ searchSubmission }}{% endif %}"
+                      name="searchSubmission"/>
+                <input type="submit" name="submit" value="submit"/></p>
+        </form>
+    {% endif %}
+    {% if path or elementID or searchSubmission or usr %}
         <small>
             {% if path %}
                 <p>Path: {{ path }}<a href="#"
-                                      onclick='window.location.search = jQuery.query.set("path", "None") '>(Clear)</a>
+                                      onclick='window.location.search = jQuery.query.set("path", "None") '> (Clear)</a>
                 </p> {% endif %}
             {% if elementID %}<p>ElemID: {{ elementID }}<a href="#"
-                                                           onclick='window.location.search = jQuery.query.set("elementID", "None") '>(Clear)</a>
+                                                           onclick='window.location.search = jQuery.query.set("elementID", "None") '>
+                (Clear)</a>
             </p>{% endif %}
             {% if searchSubmission %}<p>Search: {{ searchSubmission }}<a href="#"
-                                                                         onclick='window.location.search = jQuery.query.set("searchSubmission", "None") '>(Clear)</a>
+                                                                         onclick='window.location.search = jQuery.query.set("searchSubmission", "None") '>
+                (Clear)</a>
+            </p> {% endif %}
+
+            {% if usr %}<p>User: <a href="/Profile?usr={{ usr }}">{{ usr }}</a><a href="#"
+                                                                                      onclick='window.location.search = jQuery.query.set("usr", "None") '>
+                (Clear)</a>
             </p> {% endif %}
         </small>
     {% endif %}
@@ -41,9 +50,10 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page=1"> First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=1{{ paginationTrail }}"> First</a></li>
                     <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}"> << Previous</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{{ paginationTrail }}"> <<
+                        Previous</a>
 
                 {% endif %} </li>
 
@@ -53,12 +63,13 @@
 
 
                 {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next >> </a>
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last </a>
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ page_obj.next_page_number }}{{ paginationTrail }}">Next
+                        >> </a>
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{{ paginationTrail }}">Last </a>
 
                 {% endif %}
-
-
             </ul>
         </nav>
 
@@ -89,7 +100,7 @@
                             {% endif %}
                         </span></p>
                     <p class="card-text"><b></b>{{ each.created|naturaltime }} by <a
-                            href="#"> {{ each.User }} </a></p>
+                            href="/Profile?usr={{ each.User.username }}"> {{ each.User }} </a></p>
                 </div>
             </div>
 
