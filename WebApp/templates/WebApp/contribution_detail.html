@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load call_method %}
 {% load static %}{% load humanize %}
 {% block content %}
     <div class="overflow-auto">
@@ -19,8 +20,59 @@
             </tr>
             <tr>
                 <td>Diff</td>
-                <td>{{ object.getDifference |safe }}</td>
-            </tr>
+            <td>
+                <div class="row">
+                    <div class="col-2">
+                        <div id="vote{{ object.id }}" class="upvote">
+                            <a id="upvote{{ object.id }}" class="upvote"></a>
+                            <span class="count" id="count{{ object.id }}">{{ object.countVote.T }}</span>
+                            <a id="downvote{{ object.id }}" class="downvote"></a>
+                            <span class="small"
+                                  id="voteText{{ object.id }}"> +{{ object.countVote.U }}, -{{ object.countVote.D }}</span>
+                        </div>
+
+                        <script>
+                            setTimeout(function () {
+
+                                {% if  user.is_authenticated %}
+                                    switch ("{% call_method object 'countVote' request.user %}") {
+                                        case "D":
+                                            // code block
+                                            $('#downvote{{ object.id }}').css("background-color", "yellow");
+                                            $('#upvote{{ object.id }}').css("background-color", "");
+                                            break;
+                                        case "U":
+                                            // code block
+                                            $('#upvote{{ object.id }}').css("background-color", "yellow");
+                                            $('#downvote{{ object.id }}').css("background-color", "");
+                                            break;
+                                        default:
+                                            $('#upvote{{ object.id }}').css("background-color", "");
+                                            $('#downvote{{ object.id }}').css("background-color", "");
+
+                                        // code block
+                                    }
+                                    $('#vote{{ object.id }}').upvote({count:{{ object.countVote.T }}});
+                                {% endif %}
+
+                                $('#upvote{{ object.id }}').click(function () {
+                                    vote(upvote = true, submissionID ={{ object.id }})
+                                })
+                                $('#downvote{{ object.id }}').click(function () {
+                                    vote(upvote = false, submissionID = {{ object.id }})
+                                })
+
+                            }, 0);
+
+
+                        </script>
+
+                    </div>
+                    <div class="col-10">
+                        <p>{{ object.getDifference |safe }}</p>
+                    </div>
+                </div>
+            </td>
             <tr>
                 <td>Original</td>
                 <td>{{ object.Original }}</td>
@@ -57,10 +109,65 @@
 
     <script>
         var idcomments_acct = 'aa88f90a326f37e0b859699a06705825';
-        var idcomments_post_id ="{{ object.id  }}";
+        var idcomments_post_id = "{{ object.id  }}";
         var idcomments_post_url;
     </script>
     <span id="IDCommentsPostTitle" style="display:none"></span>
     <script type='text/javascript' src='https://www.intensedebate.com/js/genericCommentWrapperV2.js'></script>
 
+
+    <script>
+        function vote(upvote = true, submissionID) {
+            {% if not user.is_authenticated %}
+                if (confirm('You need to be logged in to Vote. Login?')) {
+                    location.href = '/login'
+                } else {
+                    return
+                }
+
+            {% endif %}
+
+            voteC = "D";
+            if (upvote !== false) voteC = "U"
+
+
+            $.ajax({
+                type: "POST",
+                url: '/SubmitVote',
+
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    submissionID: submissionID,
+                    vote: voteC
+                },
+                success: function (data, textStatus, errorThrown) {
+                    setTimeout(function () {
+                        console.log(data)
+                        $("#count" + submissionID).text(data['countVote']['T'])
+                        $("#voteText" + submissionID).text("+" + data['countVote']['U'] + ", -" + data['countVote']['D'])
+
+                        switch (data["My"]) {
+                            case "D":
+                                // code block
+                                $('#downvote' + submissionID).css("background-color", "yellow");
+                                $('#upvote' + submissionID).css("background-color", "");
+                                break;
+                            case "U":
+                                // code block
+                                $('#upvote' + submissionID).css("background-color", "yellow");
+                                $('#downvote' + submissionID).css("background-color", "");
+                                break;
+                            default:
+                                $('#upvote' + submissionID).css("background-color", "");
+                                $('#downvote' + submissionID).css("background-color", "");
+                            // code block
+                        }
+                    }, 0);
+                },
+
+                error: function (jqXHR, textStatus, errorThrown) {
+                }
+            })
+        }
+    </script>
 {% endblock %}
