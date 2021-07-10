@@ -187,3 +187,5 @@ def home(request, token=None):
                                                      "navigateToPage": navigateToPage,
                                                      "navigateToID": navigateToID,
                                                      })
+    else:
+        return render(request, 'home.html')
