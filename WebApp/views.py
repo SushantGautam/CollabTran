@@ -181,11 +181,9 @@ def SubmitContributions(request):
 def home(request, token=None):
     if request.user.is_authenticated:
         token = Token.objects.get_or_create(user=request.user)[0].key
-        navigateToPage = request.GET.get('navigateToPage', None)
-        navigateToID = request.GET.get('navigateToID', None)
-        return render(request, 'home.html', context={"token": token,
-                                                     "navigateToPage": navigateToPage,
-                                                     "navigateToID": navigateToID,
-                                                     })
-    else:
-        return render(request, 'home.html')
+    navigateToPage = request.GET.get('navigateToPage', None)
+    navigateToID = request.GET.get('navigateToID', None)
+    return render(request, 'home.html', context={"token": token,
+                                                 "navigateToPage": navigateToPage,
+                                                 "navigateToID": navigateToID,
+                                                 })
