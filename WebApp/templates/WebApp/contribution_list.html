@@ -106,12 +106,16 @@
         {% endfor %}
 
     {% else %}
-        No Any
-    {% endif %}
+        No Any Edits Found
 
-    <a href="/{% if  path %}?navigateToPage={{ path }}{% else %}{% endif %}">
-        <button type="button" class="btn btn-warning">Warning</button>
-    </a>
+        </a>
+    {% endif %}
+    <hr>
+    {% if  path %}
+        <a href="/{% if  path %}?navigateToPage={{ path }}{% else %}{% endif %}">
+            <button type="button" class="btn btn-warning">Start Contributing</button>
+        </a>
+    {% endif %}
 
 
 
