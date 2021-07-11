@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import generic
@@ -63,8 +64,55 @@ def login_request(request):
                   context={"form": form})
 
 
-def LeaderBoard(request):
-    return render(request, 'LeaderBoard.html', {'data': None})
+def LeaderBoard(request, ):
+    def ProcessQuery(hours=0):
+        qur = Contribution.objects.filter(created__gte=pytz.utc.localize(
+            datetime.now() - timedelta(hours=100))).values_list("User__username").annotate(
+            dcount=Count('User__username')).order_by()
+        qur = pd.DataFrame(qur)
+        qur.columns = ['Username', 'Count']
+        qur.sort_values('Count', inplace=True, ascending=False)
+        qur.reset_index(drop=True, inplace=True)
+        qur['Rank'] = list(qur.index + 1)
+
+        if request.user.is_authenticated:
+            myCurrent = (qur[qur['Username'] == request.user.username])
+
+            after = qur[qur.Rank < int(myCurrent.Rank)].sort_values('Rank', ascending=True).tail(5)
+            before = qur[qur.Rank > int(myCurrent.Rank)].sort_values('Rank', ascending=True).head(5)
+
+            return [qur.head(11), before, after, myCurrent.values]
+        return [qur, None, None, None]
+
+    daily = ProcessQuery(hours=24)
+    weekly = ProcessQuery(hours=24)
+    monthly = ProcessQuery(hours=24)
+    overall = ProcessQuery(hours=24)
+    context = {
+        "daily": {
+            "total": daily[0],
+            "before": daily[1],
+            "after": daily[2],
+            "MyState": daily[3],
+        }, "weekly": {
+            "total": weekly[0],
+            "before": weekly[1],
+            "after": weekly[2],
+            "MyState": weekly[3],
+        }, "monthly": {
+            "total": monthly[0],
+            "before": monthly[1],
+            "after": monthly[2],
+            "MyState": monthly[3],
+        }, "total": {
+            "total": overall[0],
+            "before": overall[1],
+            "after": overall[2],
+            "MyState": overall[3],
+        },
+    }
+
+    return render(request, 'LeaderBoard.html', context)
 
 
 def Profile(request):

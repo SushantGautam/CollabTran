@@ -3,4 +3,217 @@
 {% block heading %}LeaderBoard{% endblock %}
 {% block title %}LeaderBoard{% endblock %}
 {% block content %}
+
+
+
+
+
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+               aria-controls="nav-home" aria-selected="true">Daily</a>
+            <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+               aria-controls="nav-profile" aria-selected="false">Weekly</a>
+            <a class="nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+               aria-controls="nav-contact" aria-selected="false">Monthy</a>
+            <a class="nav-link" id="nav-total-tab" data-toggle="tab" href="#nav-total" role="tab"
+               aria-controls="nav-total" aria-selected="false">Total</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent" style="text-align: center;">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+
+            <div class="row">
+                <div class="col-6">
+                    {% if user.is_authenticated %}
+                        <br><h6>My State</h6>
+                        {% if  not daily.after is None %}
+                            {% for values in daily.after.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a>( {{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+
+                        {% if  not daily.MyState is None %}
+                            {{ daily.MyState.0.2 }}.
+                            <a href="/Profile?usr={{ daily.MyState.0.0 }}">{{ daily.MyState.0.0 }}</a>
+                            ({{ daily.MyState.0.1 }}) <---- You <br>
+
+                        {% endif %}
+
+                        {% if  not daily.before is None %}
+                            {% for values in daily.before.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+                        </div>
+                    {% endif %}
+                <div class="col-6">
+                    <br><h6>Top Contributors</h6>
+                    {% if  not daily.total is None %}
+                        {% for values in daily.total.values %}
+                            {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }})
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+            <br>
+
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+
+            <div class="row">
+                <div class="col-6">
+                    {% if user.is_authenticated %}
+                        <br><h6>My State</h6>
+                        {% if  not weekly.after is None %}
+                            {% for values in weekly.after.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a>( {{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+
+                        {% if  not weekly.MyState is None %}
+                            {{ weekly.MyState.0.2 }}.
+                            <a href="/Profile?usr={{ weekly.MyState.0.0 }}">{{ weekly.MyState.0.0 }}</a>
+                            ({{ weekly.MyState.0.1 }}) <---- You <br>
+
+                        {% endif %}
+
+                        {% if  not weekly.before is None %}
+                            {% for values in weekly.before.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+                        </div>
+                    {% endif %}
+                <div class="col-6">
+                    <br><h6>Top Contributors</h6>
+                    {% if  not weekly.total is None %}
+                        {% for values in weekly.total.values %}
+                            {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }})
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+            <br>
+
+
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+
+
+            <div class="row">
+                <div class="col-6">
+                    {% if user.is_authenticated %}
+                        <br><h6>My State</h6>
+                        {% if  not monthly.after is None %}
+                            {% for values in monthly.after.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a>( {{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+
+                        {% if  not monthly.MyState is None %}
+                            {{ monthly.MyState.0.2 }}.
+                            <a href="/Profile?usr={{ monthly.MyState.0.0 }}">{{ monthly.MyState.0.0 }}</a>
+                            ({{ monthly.MyState.0.1 }}) <---- You <br>
+
+                        {% endif %}
+
+                        {% if  not monthly.before is None %}
+                            {% for values in monthly.before.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+                        </div>
+                    {% endif %}
+                <div class="col-6">
+                    <br><h6>Top Contributors</h6>
+                    {% if  not monthly.total is None %}
+                        {% for values in monthly.total.values %}
+                            {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }})
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+            <br>
+
+
+        </div>
+        <div class="tab-pane fade" id="nav-total" role="tabpanel" aria-labelledby="nav-total-tab">
+
+
+            <div class="row">
+                <div class="col-6">
+                    {% if user.is_authenticated %}
+                        <br><h6>My State</h6>
+                        {% if  not total.after is None %}
+                            {% for values in total.after.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a>( {{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+
+                        {% if  not total.MyState is None %}
+                            {{ total.MyState.0.2 }}.
+                            <a href="/Profile?usr={{ total.MyState.0.0 }}">{{ total.MyState.0.0 }}</a>
+                            ({{ total.MyState.0.1 }}) <---- You <br>
+
+                        {% endif %}
+
+                        {% if  not total.before is None %}
+                            {% for values in total.before.values %}
+                                {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }}
+                                )
+                                <br>
+                            {% endfor %}
+                        {% endif %}
+
+                        </div>
+                    {% endif %}
+                <div class="col-6">
+                    <br><h6>Top Contributors</h6>
+                    {% if  not total.total is None %}
+                        {% for values in total.total.values %}
+                            {{ values.2 }}. <a href="/Profile?usr={{ values.0 }}">{{ values.0 }}</a> ({{ values.1 }})
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+            </div>
+            <br>
+
+
+        </div>
+    </div>
+
+
 {% endblock %}
