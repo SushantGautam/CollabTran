@@ -7,8 +7,9 @@ https://docs.djangoproject.com/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from collections import OrderedDict
+
 import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -147,8 +148,30 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
-CONSTANCE_CONFIG = {
-    'SiteBase': ("https://ioe.edu.np", 'The base directory url to use.'),
+CONSTANCE_CONFIG = OrderedDict([
+    ('SiteBase', ("https://ioe.edu.np", 'The base directory url to use.')),
+
+    ('SITE_NAME', (0, '. . .')),
+    ('Daily_Votes_Get', (5, 'Daily Votes User Get To Complete Quest')),
+    ('Daily_Votes_Given', (5, 'Daily Votes User Give To Complete Quest')),
+    ('Daily_Contributions', (5, 'Daily Contributions To Complete Quest')),
+
+    ('Weekly_Votes_Get', (20, 'Weekly Votes User Get To Complete Quest')),
+    ('Weekly_Votes_Given', (20, 'Weekly Votes User Give To Complete Quest')),
+    ('Weekly_Contributions', (20, 'Weekly Contributions To Complete Quest')),
+
+    ('Monthly_Votes_Get', (50, 'Monthly Votes User Get To Complete Quest')),
+    ('Monthly_Votes_Given', (50, 'Monthly Votes User Give To Complete Quest')),
+    ('Monthly_Contributions', (50, 'Monthly Contributions To Complete Quest')),
+
+])
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'General Options': ('SiteBase',),
+    'Quest Options': {
+        'fields': ('SITE_NAME', 'SITE_DESCRIPTION'),
+        'collapse': False
+    },
 }
 
 LOGIN_URL = '/login/'

@@ -1,7 +1,10 @@
 from collections import Counter
+from datetime import datetime, timedelta
 from urllib.parse import unquote
 
 import pandas as pd
+import pytz
+from constance import config
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -78,7 +81,58 @@ def Profile(request):
         user = get_object_or_404(User, username=usr)
         if user == request.user:
             isMe = True
-    return render(request, 'profile.html', {'data': getUserContributions(user), "usr": user, 'isMe': isMe})
+    quest = {
+        "daily": {
+            "Votes_Get": config.Daily_Votes_Get,
+            "Votes_Given": config.Daily_Votes_Given,
+            "Contributions": config.Daily_Contributions,
+        },
+        "weekly": {
+            "Votes_Get": config.Weekly_Votes_Get,
+            "Votes_Given": config.Weekly_Votes_Given,
+            "Contributions": config.Weekly_Contributions,
+        },
+        "monthly": {
+            "Votes_Get": config.Monthly_Votes_Get,
+            "Votes_Given": config.Monthly_Votes_Given,
+            "Contributions": config.Monthly_Contributions,
+        },
+        "my":
+            {"daily": {
+                "Votes_Get": Votes.objects.filter(
+                    last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(hours=24)),
+                    contribution__User=user).count(),
+                "Votes_Given": Votes.objects.filter(
+                    last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(hours=24)),
+                    voter=user).count(),
+                "Contributions": Contribution.objects.filter(User=user, created__gte=pytz.utc.localize(
+                    datetime.now() - timedelta(hours=24))).count(),
+            },
+                "weekly": {
+                    "Votes_Get": Votes.objects.filter(
+                        last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(days=7)),
+                        contribution__User=user).count(),
+                    "Votes_Given": Votes.objects.filter(
+                        last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(days=7)),
+                        voter=user).count(),
+                    "Contributions": Contribution.objects.filter(User=user, created__gte=pytz.utc.localize(
+                        datetime.now() - timedelta(days=7))).count(),
+                },
+                "monthly": {
+                    "Votes_Get": Votes.objects.filter(
+                        last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(days=30)),
+                        contribution__User=user).count(),
+                    "Votes_Given": Votes.objects.filter(
+                        last_updated__gte=pytz.utc.localize(datetime.now() - timedelta(days=30)),
+                        voter=user).count(),
+                    "Contributions": Contribution.objects.filter(User=user, created__gte=pytz.utc.localize(
+                        datetime.now() - timedelta(days=30))).count(),
+                },
+            }
+    }
+
+    return render(request, 'profile.html',
+                  {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest})
 
 
 class ContributionListView(FilterView):

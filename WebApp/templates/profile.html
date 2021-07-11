@@ -1,29 +1,152 @@
 {% extends "base.html" %}
 {% load static %}
-{% block heading %}{% if isMe %}My {% endif %}Profile {% endblock %}
+{% block heading %}{% if isMe %}My {% endif %}Profile: {{ usr }} {% endblock %}
 {% block title %}{% if isMe %}My {% endif %} Profile{% endblock %}
 {% block content %}
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-               aria-selected="true">Home</a>
+               aria-selected="true">Daily</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-               aria-selected="false">Profile</a>
+               aria-selected="false">Weekly</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-               aria-selected="false">Contact</a>
+               aria-selected="false">Monthly</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+        <br>
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <h6> Total Votes Obtained (Up-DownVotes): {{ quest.my.daily.Votes_Get }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.daily.Votes_Get quest.daily.Votes_Get 100 as width %}
+                <div class="progress-bar progress-bar-striped progress-bar-animated text-dark" role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.daily.Votes_Get }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.daily.Votes_Get }}"> &nbsp;&nbsp;
+                    {{ quest.my.daily.Votes_Get }} of {{ quest.daily.Votes_Get }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Votes Given: {{ quest.my.daily.Votes_Given }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.daily.Votes_Given quest.daily.Votes_Given 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-success progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.daily.Votes_Given }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.daily.Votes_Given }}"> &nbsp;&nbsp;
+                    {{ quest.my.daily.Votes_Given }} of {{ quest.daily.Votes_Given }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Contributions: {{ quest.my.daily.Contributions }} </h6>
+
+            <div class="progress">
+                {% widthratio quest.my.daily.Contributions quest.daily.Contributions 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-info progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.daily.Contributions }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.daily.Contributions }}"> &nbsp;&nbsp;
+                    {{ quest.my.daily.Contributions }} of {{ quest.daily.Contributions }} Completed
+                </div>
+            </div>
+            <br>
+
+        </div>
+
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+
+            <h6> Total Votes Obtained (Up-DownVotes): {{ quest.my.weekly.Votes_Get }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.weekly.Votes_Get quest.weekly.Votes_Get 100 as width %}
+                <div class="progress-bar progress-bar-striped progress-bar-animated text-dark" role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.weekly.Votes_Get }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.weekly.Votes_Get }}"> &nbsp;&nbsp;
+                    {{ quest.my.weekly.Votes_Get }} of {{ quest.weekly.Votes_Get }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Votes Given: {{ quest.my.weekly.Votes_Given }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.weekly.Votes_Given quest.weekly.Votes_Given 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-success progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.weekly.Votes_Given }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.weekly.Votes_Given }}"> &nbsp;&nbsp;
+                    {{ quest.my.weekly.Votes_Given }} of {{ quest.weekly.Votes_Given }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Contributions: {{ quest.my.weekly.Contributions }} </h6>
+
+            <div class="progress">
+                {% widthratio quest.my.weekly.Contributions quest.weekly.Contributions 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-info progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.weekly.Contributions }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.weekly.Contributions }}"> &nbsp;&nbsp;
+                    {{ quest.my.weekly.Contributions }} of {{ quest.weekly.Contributions }} Completed
+                </div>
+            </div>
+            <br>
+
+
+        </div>
+
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+
+            <h6> Total Votes Obtained (Up-DownVotes): {{ quest.my.monthly.Votes_Get }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.monthly.Votes_Get quest.monthly.Votes_Get 100 as width %}
+                <div class="progress-bar progress-bar-striped progress-bar-animated text-dark" role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.monthly.Votes_Get }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.monthly.Votes_Get }}"> &nbsp;&nbsp;
+                    {{ quest.my.monthly.Votes_Get }} of {{ quest.monthly.Votes_Get }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Votes Given: {{ quest.my.monthly.Votes_Given }} </h6>
+            <div class="progress">
+                {% widthratio quest.my.monthly.Votes_Given quest.monthly.Votes_Given 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-success progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.monthly.Votes_Given }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.monthly.Votes_Given }}"> &nbsp;&nbsp;
+                    {{ quest.my.monthly.Votes_Given }} of {{ quest.monthly.Votes_Given }} Completed
+                </div>
+            </div>
+            <br>
+            <h6> Total Contributions: {{ quest.my.monthly.Contributions }} </h6>
+
+            <div class="progress">
+                {% widthratio quest.my.monthly.Contributions quest.monthly.Contributions 100 as width %}
+                <div class="progress-bar progress-bar-striped bg-info progress-bar-animated text-dark"
+                     role="progressbar"
+                     style="width:{{ width }}%"
+                     aria-valuenow="{{ quest.my.monthly.Contributions }}"
+                     aria-valuemin="0" aria-valuemax="{{ quest.monthly.Contributions }}"> &nbsp;&nbsp;
+                    {{ quest.my.monthly.Contributions }} of {{ quest.monthly.Contributions }} Completed
+                </div>
+            </div>
+            <br>
+
+
+        </div>
     </div>
 
     <br>
-    <a class="btn btn-primary" href="/contribution/?usr={{ user.username }}">View User Contributions </a>
+    <a class="btn btn-primary" href="/contribution/?usr={{ usr }}">View User Contributions </a>
 {% endblock %}
