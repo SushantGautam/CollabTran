@@ -263,8 +263,8 @@ class UrlsListView(generic.ListView):
 
 
 def resolveURL(request):
-    if request.user.is_anonymous:
-        return HttpResponse('Unauthorized', status=401)
+    # if request.user.is_anonymous:
+    #     return HttpResponse('Unauthorized', status=401)
     EditURL = request.POST.get('EditURL')
 
     contributions_q = Contribution.objects.filter(EditURL=EditURL).values("id", 'Original', 'Submission', "EditxPath",
