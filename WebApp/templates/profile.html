@@ -17,6 +17,10 @@
             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
                aria-selected="false">Monthly</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total"
+               aria-selected="false">Total</a>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <br>
@@ -144,6 +148,18 @@
             <br>
 
 
+        </div>
+
+        <div class="tab-pane fade" id="total" role="tabpanel" aria-labelledby="total-tab">
+            <div>
+
+                <b> Total Votes Obtained (Up-DownVotes): </b>{{ quest.my.total.Votes_Get }}
+                <hr>
+                <b> Total Votes Given:</b> {{ quest.my.total.Votes_Given }}
+                <hr>
+                <b> Total Contributions:</b> {{ quest.my.total.Contributions }}
+
+            </div>
         </div>
     </div>
 

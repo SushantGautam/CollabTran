@@ -128,6 +128,13 @@ def Profile(request):
                     "Contributions": Contribution.objects.filter(User=user, created__gte=pytz.utc.localize(
                         datetime.now() - timedelta(days=30))).count(),
                 },
+                "total": {
+                    "Votes_Get": Votes.objects.filter(
+                        contribution__User=user).count(),
+                    "Votes_Given": Votes.objects.filter(
+                        voter=user).count(),
+                    "Contributions": Contribution.objects.filter(User=user, ).count(),
+                },
             }
     }
 
