@@ -236,11 +236,11 @@
                 TotalElementsEditedOnThisPage = data['TotalElementsEditedOnThisPage']
                 LastContributedInThisPageBy = data['LastContributedInThisPageBy']
 
-                RepaintIframeWithTranslations(force = iFrameReloadRemaining)
                 iFrameReloadRemaining = 0;
 
                 if (not_first_page) {
                     ShowTranslatePanel(force = true);
+                    RepaintIframeWithTranslations(force = iFrameReloadRemaining)
                 } else {
                     not_first_page = 1;
 
