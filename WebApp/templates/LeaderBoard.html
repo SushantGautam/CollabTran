@@ -26,8 +26,8 @@
 
 
             <div class="row">
-                <div class="col-6">
-                    {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
+                    <div class="col-6">
                         <br><h6>My State</h6>
                         {% if  not daily.after is None %}
                             {% for values in daily.after.values %}
@@ -52,9 +52,9 @@
                                 <br>
                             {% endfor %}
                         {% endif %}
-                    {% endif %}
-                </div>
 
+                    </div>
+                {% endif %}
                 <div class="col-6">
                     <br><h6>Top Contributors</h6>
                     {% if  not daily.total is None %}
@@ -73,8 +73,9 @@
 
 
             <div class="row">
-                <div class="col-6">
-                    {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
+
+                    <div class="col-6">
                         <br><h6>My State</h6>
                         {% if  not weekly.after is None %}
                             {% for values in weekly.after.values %}
@@ -99,9 +100,9 @@
                                 <br>
                             {% endfor %}
                         {% endif %}
-                    {% endif %}
-                </div>
 
+                    </div>
+                {% endif %}
                 <div class="col-6">
                     <br><h6>Top Contributors</h6>
                     {% if  not weekly.total is None %}
@@ -121,8 +122,9 @@
 
 
             <div class="row">
-                <div class="col-6">
-                    {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
+
+                    <div class="col-6">
                         <br><h6>My State</h6>
                         {% if  not monthly.after is None %}
                             {% for values in monthly.after.values %}
@@ -147,9 +149,9 @@
                                 <br>
                             {% endfor %}
                         {% endif %}
-                    {% endif %}
-                </div>
 
+                    </div>
+                {% endif %}
                 <div class="col-6">
                     <br><h6>Top Contributors</h6>
                     {% if  not monthly.total is None %}
@@ -169,8 +171,9 @@
 
 
             <div class="row">
-                <div class="col-6">
-                    {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
+
+                    <div class="col-6">
                         <br><h6>My State</h6>
                         {% if  not total.after is None %}
                             {% for values in total.after.values %}
@@ -195,9 +198,9 @@
                                 <br>
                             {% endfor %}
                         {% endif %}
-                    {% endif %}
-                </div>
 
+                    </div>
+                {% endif %}
                 <div class="col-6">
                     <br><h6>Top Contributors</h6>
                     {% if  not total.total is None %}
