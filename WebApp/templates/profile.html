@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% block heading %}{% if isMe %}My {% endif %}Profile: {{ usr }}
-    <span class="badge badge-{{ level.0 }}"> {{ level.1 }}</span> {% endblock %}
+    <span class="badge badge-{{ level.0 }}"> {{ level.1 }}</span>
+<span class="badge badge-pill badge-{{ level.0 }}">Level {{ level.2 }}</span>
+
+{% endblock %}
 {% block title %}{% if isMe %}My {% endif %} Profile{% endblock %}
 {% block content %}
 

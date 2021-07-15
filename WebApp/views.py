@@ -197,11 +197,11 @@ def Profile(request):
                   {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest, "level": CalLevel(level)})
 
 def CalLevel(TotalContribution):
-    if (0 <= TotalContribution <= 10): return ['secondary', 'Novice']
-    elif (11 <= TotalContribution <= 100): return ['warning', 'Beginner']
-    elif (101 <= TotalContribution <= 1000): return ['primary', 'Competent']
-    elif (1001 <= TotalContribution <= 10000): return ['success', 'Proficient']
-    elif (10001 <= TotalContribution): return ['danger', 'Expert']
+    if (0 <= TotalContribution <= 10): return ['secondary', 'Novice', floor(TotalContribution/1)]
+    elif (11 <= TotalContribution <= 100): return ['warning', 'Beginner', floor(TotalContribution/10)]
+    elif (101 <= TotalContribution <= 1000): return ['primary', 'Competent', floor(TotalContribution/100)]
+    elif (1001 <= TotalContribution <= 10000): return ['success', 'Proficient', floor(TotalContribution/1000)]
+    elif (10001 <= TotalContribution): return ['danger', 'Expert', floor(TotalContribution/10000)]
 
 class ContributionListView(FilterView):
     model = models.Contribution
