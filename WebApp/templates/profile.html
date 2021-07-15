@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
-{% block heading %}{% if isMe %}My {% endif %}Profile: {{ usr }} {% endblock %}
+{% block heading %}{% if isMe %}My {% endif %}Profile: {{ usr }}
+    <span class="badge badge-{{ level.0 }}"> {{ level.1 }}</span> {% endblock %}
 {% block title %}{% if isMe %}My {% endif %} Profile{% endblock %}
 {% block content %}
+
     <h5 style="text-align: center"> Quest:</h5>
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">

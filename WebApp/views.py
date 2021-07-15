@@ -1,5 +1,6 @@
 from collections import Counter
 from datetime import datetime, timedelta
+from math import floor
 from urllib.parse import unquote
 
 import pandas as pd
@@ -64,7 +65,7 @@ def login_request(request):
                   context={"form": form})
 
 
-def LeaderBoard(request, ):
+def LeaderBoard(request,username=None ):
     def ProcessQuery(hours=0):
         qur = Contribution.objects.filter(created__gte=pytz.utc.localize(
             datetime.now() - timedelta(hours=100))).values_list("User__username").annotate(
@@ -75,7 +76,7 @@ def LeaderBoard(request, ):
         qur.reset_index(drop=True, inplace=True)
         qur['Rank'] = list(qur.index + 1)
 
-        if request.user.is_authenticated:
+        if request.user.is_authenticated :
             myCurrent = (qur[qur['Username'] == request.user.username])
 
             after = qur[qur.Rank < int(myCurrent.Rank)].sort_values('Rank', ascending=True).tail(5)
@@ -85,9 +86,9 @@ def LeaderBoard(request, ):
         return [qur, None, None, None]
 
     daily = ProcessQuery(hours=24)
-    weekly = ProcessQuery(hours=24)
-    monthly = ProcessQuery(hours=24)
-    overall = ProcessQuery(hours=24)
+    weekly = ProcessQuery(hours=24*7)
+    monthly = ProcessQuery(hours=24*30)
+    overall = ProcessQuery(hours=24*999999999999)
     context = {
         "daily": {
             "total": daily[0],
@@ -186,9 +187,17 @@ def Profile(request):
             }
     }
 
-    return render(request, 'profile.html',
-                  {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest})
 
+    level=quest['my']['total']['Contributions'] + quest['my']['total']['Votes_Given']
+    return render(request, 'profile.html',
+                  {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest, "level": CalLevel(level)})
+
+def CalLevel(TotalContribution):
+    if (0 <= TotalContribution <= 10): return ['secondary', 'Novice']
+    elif (11 <= TotalContribution <= 100): return ['warning', 'Beginner']
+    elif (101 <= TotalContribution <= 1000): return ['primary', 'Competent']
+    elif (1001 <= TotalContribution <= 10000): return ['success', 'Proficient']
+    elif (10001 <= TotalContribution): return ['danger', 'Expert']
 
 class ContributionListView(FilterView):
     model = models.Contribution
