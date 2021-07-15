@@ -65,13 +65,17 @@ def login_request(request):
                   context={"form": form})
 
 
-def LeaderBoard(request,username=None ):
+def LeaderBoard(request):
     def ProcessQuery(hours=0):
         qur = Contribution.objects.filter(created__gte=pytz.utc.localize(
-            datetime.now() - timedelta(hours=100))).values_list("User__username").annotate(
+            datetime.now() - timedelta(hours=hours))).values_list("User__username").annotate(
             dcount=Count('User__username')).order_by()
-        qur = pd.DataFrame(qur)
-        qur.columns = ['Username', 'Count']
+
+        if(len(qur)):
+            qur = pd.DataFrame(qur, columns = ['Username', 'Count'])
+        else:
+            return [None, None, None, None]
+
         qur.sort_values('Count', inplace=True, ascending=False)
         qur.reset_index(drop=True, inplace=True)
         qur['Rank'] = list(qur.index + 1)
@@ -88,7 +92,7 @@ def LeaderBoard(request,username=None ):
     daily = ProcessQuery(hours=24)
     weekly = ProcessQuery(hours=24*7)
     monthly = ProcessQuery(hours=24*30)
-    overall = ProcessQuery(hours=24*999999999999)
+    overall = ProcessQuery(hours=24*9999)
     context = {
         "daily": {
             "total": daily[0],
