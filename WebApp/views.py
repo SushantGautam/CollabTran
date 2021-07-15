@@ -71,8 +71,8 @@ def LeaderBoard(request):
             datetime.now() - timedelta(hours=hours))).values_list("User__username").annotate(
             dcount=Count('User__username')).order_by()
 
-        if(len(qur)):
-            qur = pd.DataFrame(qur, columns = ['Username', 'Count'])
+        if (len(qur)):
+            qur = pd.DataFrame(qur, columns=['Username', 'Count'])
         else:
             return [None, None, None, None]
 
@@ -80,7 +80,7 @@ def LeaderBoard(request):
         qur.reset_index(drop=True, inplace=True)
         qur['Rank'] = list(qur.index + 1)
 
-        if request.user.is_authenticated :
+        if request.user.is_authenticated:
             myCurrent = (qur[qur['Username'] == request.user.username])
 
             after = qur[qur.Rank < int(myCurrent.Rank)].sort_values('Rank', ascending=True).tail(5)
@@ -90,9 +90,9 @@ def LeaderBoard(request):
         return [qur, None, None, None]
 
     daily = ProcessQuery(hours=24)
-    weekly = ProcessQuery(hours=24*7)
-    monthly = ProcessQuery(hours=24*30)
-    overall = ProcessQuery(hours=24*9999)
+    weekly = ProcessQuery(hours=24 * 7)
+    monthly = ProcessQuery(hours=24 * 30)
+    overall = ProcessQuery(hours=24 * 9999)
     context = {
         "daily": {
             "total": daily[0],
@@ -191,17 +191,25 @@ def Profile(request):
             }
     }
 
-
-    level=quest['my']['total']['Contributions'] + quest['my']['total']['Votes_Given']
+    level = quest['my']['total']['Contributions'] + quest['my']['total']['Votes_Given'] + quest['my']['total'][
+        'Votes_Get']
     return render(request, 'profile.html',
-                  {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest, "level": CalLevel(level)})
+                  {'data': getUserContributions(user), "usr": user, 'isMe': isMe, "quest": quest,
+                   "level": CalLevel(level)})
+
 
 def CalLevel(TotalContribution):
-    if (0 <= TotalContribution <= 10): return ['secondary', 'Novice', floor(TotalContribution/1)]
-    elif (11 <= TotalContribution <= 100): return ['warning', 'Beginner', floor(TotalContribution/10)]
-    elif (101 <= TotalContribution <= 1000): return ['primary', 'Competent', floor(TotalContribution/100)]
-    elif (1001 <= TotalContribution <= 10000): return ['success', 'Proficient', floor(TotalContribution/1000)]
-    elif (10001 <= TotalContribution): return ['danger', 'Expert', floor(TotalContribution/10000)]
+    if (0 <= TotalContribution <= 10):
+        return ['secondary', 'Novice', floor(TotalContribution / 1)]
+    elif (11 <= TotalContribution <= 100):
+        return ['warning', 'Beginner', floor(TotalContribution / 10)]
+    elif (101 <= TotalContribution <= 1000):
+        return ['primary', 'Competent', floor(TotalContribution / 100)]
+    elif (1001 <= TotalContribution <= 10000):
+        return ['success', 'Proficient', floor(TotalContribution / 1000)]
+    elif (10001 <= TotalContribution):
+        return ['danger', 'Expert', floor(TotalContribution / 10000)]
+
 
 class ContributionListView(FilterView):
     model = models.Contribution
