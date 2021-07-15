@@ -4,7 +4,7 @@ from django.urls import path
 from rest_framework import routers
 
 from . import views
-from .views import signup, LeaderBoard, Profile, logout_request, login_request
+from .views import signup, LeaderBoard, Profile, logout_request, login_request, FeedBack
 
 router = routers.DefaultRouter()
 
@@ -17,6 +17,7 @@ urlpatterns += (
     path('', views.home, name='index'),
     path('navigateToPage', views.home, name='index'),
     path('LeaderBoard', LeaderBoard, name='LeaderBoard'),
+    path('FeedBack', FeedBack, name='FeedBack'),
 )
 
 urlpatterns += (

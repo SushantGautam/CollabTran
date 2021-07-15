@@ -221,7 +221,7 @@ class ContributionListView(FilterView):
         path = (self.request.GET.get('path', None))
         elementID = (self.request.GET.get('elementID', None))
         searchSubmission = (self.request.GET.get('searchSubmission', None))
-        user = (self.request.GET.get('user', None))
+        user = (self.request.GET.get('usr', None))
 
         new_context = Contribution.objects.all()
         if (path and path != 'None'):
@@ -349,6 +349,10 @@ def home(request, token=None):
                                                  "navigateToPage": navigateToPage,
                                                  "navigateToID": navigateToID,
                                                  })
+
+
+def FeedBack(request):
+    return render(request, 'feedback.html', )
 
 
 def getUserContributions(user):

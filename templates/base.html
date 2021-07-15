@@ -35,6 +35,9 @@
             <li class="nav-item {% if 'LeaderBoard' in request.path %} active{% endif %}">
                 <a class="nav-link" href="{% url 'LeaderBoard' %}">LeaderBoard</a>
             </li>
+            <li class="nav-item {% if 'FeedBack' in request.path %} active{% endif %}">
+                <a class="nav-link" href="{% url 'FeedBack' %}">FeedBack</a>
+            </li>
 
             {% if user.is_authenticated %}
                 <li class="nav-item {% if 'Profile' in request.path %} active{% endif %}">
@@ -50,7 +53,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
                 </li>
+
+
             {% endif %}
+
 
         </ul>
 
